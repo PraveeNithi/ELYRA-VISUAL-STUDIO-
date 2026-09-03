@@ -1,0 +1,403 @@
+/* ==========================================================================
+   ELYRA VISUAL STUDIO — CORE DESIGN SYSTEM & TOKENS
+   Brand Identity: "Designs that build brands."
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+:root {
+  /* Exact Specified Brand Palette */
+  --color-forest: #12372A;        /* Deep Forest Green — Primary Brand */
+  --color-offwhite: #F7F4EA;      /* Off-White — Primary Background */
+  --color-emerald: #2E8B62;       /* Emerald Green — Secondary Accent */
+  --color-gold: #D6A84F;          /* Warm Gold — Important Highlights & Premium CTA */
+  --color-text-dark: #183027;     /* Dark Green — Primary Text */
+  --color-text-muted: #667A70;    /* Muted Green-Gray — Secondary Text */
+
+  /* Palette Alpha / Tints */
+  --color-forest-90: rgba(18, 55, 42, 0.90);
+  --color-forest-80: rgba(18, 55, 42, 0.80);
+  --color-forest-15: rgba(18, 55, 42, 0.15);
+  --color-forest-08: rgba(18, 55, 42, 0.08);
+  --color-forest-04: rgba(18, 55, 42, 0.04);
+  
+  --color-emerald-15: rgba(46, 139, 98, 0.15);
+  --color-emerald-25: rgba(46, 139, 98, 0.25);
+  --color-gold-15: rgba(214, 168, 79, 0.15);
+  --color-gold-25: rgba(214, 168, 79, 0.25);
+  --color-offwhite-surface: #FFFFFF;
+  --color-offwhite-card: #FDFCFA;
+
+  /* Typography */
+  --font-display: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  /* Elevations & Shadows */
+  --shadow-sm: 0 2px 8px rgba(18, 55, 42, 0.06);
+  --shadow-md: 0 8px 24px rgba(18, 55, 42, 0.08);
+  --shadow-lg: 0 16px 40px rgba(18, 55, 42, 0.12);
+  --shadow-xl: 0 24px 60px rgba(18, 55, 42, 0.16);
+  --shadow-gold: 0 10px 25px rgba(214, 168, 79, 0.28);
+  --shadow-emerald: 0 10px 25px rgba(46, 139, 98, 0.22);
+
+  /* Borders & Radius */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-full: 9999px;
+
+  --border-subtle: 1px solid var(--color-forest-08);
+  --border-card: 1px solid rgba(18, 55, 42, 0.10);
+  --border-gold: 1px solid var(--color-gold);
+
+  /* Transitions */
+  --transition-fast: 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-base: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-smooth: 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ==========================================================================
+   RESET & BASE STYLES
+   ========================================================================== */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--color-offwhite);
+  color: var(--color-text-dark);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.65;
+  letter-spacing: -0.01em;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body.modal-locked,
+body.drawer-open {
+  overflow: hidden;
+}
+
+img, svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+button, input, textarea, select {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  border: none;
+  outline: none;
+  background: none;
+}
+
+button {
+  cursor: pointer;
+}
+
+ul, ol {
+  list-style: none;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-offwhite);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-forest-15);
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-forest);
+}
+
+/* ==========================================================================
+   TYPOGRAPHY
+   ========================================================================== */
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  color: var(--color-forest);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+h1 {
+  font-size: clamp(2.5rem, 5.5vw, 4.25rem);
+  letter-spacing: -0.03em;
+}
+
+h2 {
+  font-size: clamp(2rem, 3.8vw, 3rem);
+}
+
+h3 {
+  font-size: clamp(1.35rem, 2.2vw, 1.75rem);
+}
+
+h4 {
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+p {
+  color: var(--color-text-muted);
+}
+
+.text-gold {
+  color: var(--color-gold);
+}
+
+.text-forest {
+  color: var(--color-forest);
+}
+
+.text-emerald {
+  color: var(--color-emerald);
+}
+
+/* ==========================================================================
+   CONTAINER & SECTION UTILITIES
+   ========================================================================== */
+
+.container {
+  width: 100%;
+  max-width: 1240px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+.container-narrow {
+  max-width: 900px;
+}
+
+.section {
+  padding-top: clamp(4.5rem, 8vw, 7.5rem);
+  padding-bottom: clamp(4.5rem, 8vw, 7.5rem);
+  position: relative;
+}
+
+.section-alt {
+  background-color: #F1ECE0;
+}
+
+.section-forest-dark {
+  background-color: var(--color-forest);
+  color: var(--color-offwhite);
+}
+
+.section-forest-dark h1,
+.section-forest-dark h2,
+.section-forest-dark h3,
+.section-forest-dark h4 {
+  color: var(--color-offwhite);
+}
+
+.section-forest-dark p {
+  color: rgba(247, 244, 234, 0.75);
+}
+
+.section-header {
+  text-align: center;
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: clamp(3rem, 5vw, 4.5rem);
+}
+
+.section-header.text-left {
+  text-align: left;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.section-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 1rem;
+  border-radius: var(--radius-full);
+  background: var(--color-forest-08);
+  color: var(--color-forest);
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 1.25rem;
+  border: 1px solid var(--color-forest-15);
+}
+
+.section-badge.gold-badge {
+  background: var(--color-gold-15);
+  color: var(--color-forest);
+  border-color: rgba(214, 168, 79, 0.35);
+}
+
+.section-badge.badge-white {
+  background: rgba(247, 244, 234, 0.12);
+  color: var(--color-offwhite);
+  border-color: rgba(247, 244, 234, 0.25);
+}
+
+.section-title {
+  margin-bottom: 1rem;
+}
+
+.section-subtitle {
+  font-size: clamp(1.05rem, 1.5vw, 1.2rem);
+  line-height: 1.6;
+}
+
+/* ==========================================================================
+   BUTTONS & CTAs
+   ========================================================================== */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  padding: 0.95rem 1.85rem;
+  border-radius: var(--radius-full);
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: -0.01em;
+  text-align: center;
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+  user-select: none;
+}
+
+.btn svg {
+  width: 18px;
+  height: 18px;
+  transition: transform var(--transition-base);
+}
+
+.btn:hover svg {
+  transform: translateX(3px);
+}
+
+/* Gold Primary CTA */
+.btn-gold {
+  background: linear-gradient(135deg, #F3E5AB 0%, #D6A84F 50%, #B8860B 100%);
+  color: var(--color-forest);
+  box-shadow: var(--shadow-gold);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.btn-gold:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(214, 168, 79, 0.4);
+  filter: brightness(1.04);
+}
+
+.btn-gold:active {
+  transform: translateY(0);
+}
+
+/* Forest Primary Button */
+.btn-forest {
+  background: var(--color-forest);
+  color: var(--color-offwhite);
+  box-shadow: var(--shadow-md);
+  border: 1px solid rgba(247, 244, 234, 0.1);
+}
+
+.btn-forest:hover {
+  background: #184736;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Emerald Accent Button */
+.btn-emerald {
+  background: var(--color-emerald);
+  color: var(--color-offwhite);
+  box-shadow: var(--shadow-emerald);
+}
+
+.btn-emerald:hover {
+  background: #257451;
+  transform: translateY(-2px);
+}
+
+/* Outline Buttons */
+.btn-outline {
+  border: 1.5px solid var(--color-forest);
+  color: var(--color-forest);
+  background: transparent;
+}
+
+.btn-outline:hover {
+  background: var(--color-forest);
+  color: var(--color-offwhite);
+  transform: translateY(-2px);
+}
+
+.btn-outline-white {
+  border: 1.5px solid rgba(247, 244, 234, 0.6);
+  color: var(--color-offwhite);
+  background: transparent;
+}
+
+.btn-outline-white:hover {
+  border-color: var(--color-offwhite);
+  background: rgba(247, 244, 234, 0.12);
+  transform: translateY(-2px);
+}
+
+.btn-sm {
+  padding: 0.65rem 1.25rem;
+  font-size: 0.85rem;
+}
+
+/* ==========================================================================
+   SCROLL REVEAL ANIMATION CLASSES
+   ========================================================================== */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.delay-1 { transition-delay: 0.1s; }
+.delay-2 { transition-delay: 0.2s; }
+.delay-3 { transition-delay: 0.3s; }
+.delay-4 { transition-delay: 0.4s; }

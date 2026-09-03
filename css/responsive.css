@@ -1,0 +1,154 @@
+/* ==========================================================================
+   ELYRA VISUAL STUDIO — RESPONSIVE MEDIA QUERIES
+   Mobile-first, Tablet & Desktop Layout Optimizations
+   ========================================================================== */
+
+/* Laptop & Medium Screens (< 1080px) */
+@media (max-width: 1080px) {
+  .hero-grid {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  .hero-visual-card {
+    max-width: 600px;
+    margin: 0 auto;
+    transform: none;
+  }
+
+  .hero-visual-card:hover {
+    transform: none;
+  }
+
+  .webdesign-grid {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  .footer-top-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+  }
+}
+
+/* Tablet Screens (< 880px) */
+@media (max-width: 880px) {
+  .desktop-nav {
+    display: none;
+  }
+
+  .hamburger-btn {
+    display: flex;
+  }
+
+  .about-grid {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  .contact-grid {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  .portfolio-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Mobile Screens (< 640px) */
+@media (max-width: 640px) {
+  .header-container {
+    height: 72px;
+  }
+
+  .site-header .btn-gold {
+    padding: 0.65rem 1.1rem;
+    font-size: 0.85rem;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .hero-actions .btn {
+    width: 100%;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .about-core-pillars {
+    grid-template-columns: 1fr;
+  }
+
+  .web-feature-pills {
+    grid-template-columns: 1fr;
+  }
+
+  .builder-service-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .builder-steps-bar {
+    padding: 0.85rem 1.25rem;
+  }
+
+  .builder-step-badge span:not(.step-num) {
+    display: none;
+  }
+
+  .modal-dialog {
+    max-height: 95vh;
+  }
+
+  .modal-header,
+  .modal-scrollable-body {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+
+  .modal-footer-actions {
+    flex-direction: column-reverse;
+    gap: 1rem;
+  }
+
+  .modal-footer-actions .btn {
+    width: 100%;
+  }
+
+  .footer-top-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .floating-badge {
+    display: none;
+  }
+
+  .toast-container {
+    bottom: 1rem;
+    right: 1rem;
+    left: 1rem;
+  }
+
+  .elyra-toast {
+    max-width: 100%;
+  }
+}

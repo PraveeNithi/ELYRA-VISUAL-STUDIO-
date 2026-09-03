@@ -1,6 +1,24 @@
 {
   "projects": [
     {
+      "id": "ELY-1005",
+      "fullName": "Rohan Deshmukh",
+      "businessName": "Veritas Renewable Energy",
+      "phone": "+91 98765 00112",
+      "email": "rohan@veritasenergy.in",
+      "services": [
+        "Logo Design",
+        "Branding",
+        "Website"
+      ],
+      "requirements": "We require a modern logo mark, complete sustainability brand guidelines, and a responsive 4-page corporate website with inquiry capture.",
+      "timeline": "2-3 weeks",
+      "status": "In Progress",
+      "notes": "Brand moodboard presentation scheduled for Friday.",
+      "createdAt": "2026-09-03T15:06:27.606Z",
+      "updatedAt": "2026-09-03T15:06:27.641Z"
+    },
+    {
       "id": "ELY-1004",
       "fullName": "Rohan Deshmukh",
       "businessName": "Veritas Renewable Energy",
@@ -72,6 +90,21 @@
     }
   ],
   "notifications": [
+    {
+      "id": "NOTIF-MTLNR72U-F629",
+      "type": "new_request",
+      "title": "New Project Request",
+      "message": "Rohan Deshmukh submitted a request for Veritas Renewable Energy",
+      "clientName": "Rohan Deshmukh",
+      "services": [
+        "Logo Design",
+        "Branding",
+        "Website"
+      ],
+      "projectId": "ELY-1005",
+      "read": false,
+      "createdAt": "2026-09-03T15:06:27.606Z"
+    },
     {
       "id": "NOTIF-MTLLXLSR-D1C2",
       "type": "new_request",

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="elyraGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#12372A" />
+      <stop offset="100%" stop-color="#183027" />
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F3E5AB" />
+      <stop offset="50%" stop-color="#D6A84F" />
+      <stop offset="100%" stop-color="#B8860B" />
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="16" fill="url(#elyraGrad)" />
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="none" stroke="#D6A84F" stroke-width="1.5" stroke-opacity="0.4" />
+  
+  <!-- Stylized Geometric E Monogram -->
+  <path d="M20 18 H42 C43.1 18 44 18.9 44 20 C44 21.1 43.1 22 42 22 H24 V30 H38 C39.1 30 40 30.9 40 32 C40 33.1 39.1 34 38 34 H24 V42 H42 C43.1 42 44 42.9 44 44 C44 45.1 43.1 46 42 46 H20 C18.9 46 18 45.1 18 44 V20 C18 18.9 18.9 18 20 18 Z" fill="url(#goldGrad)" />
+  
+  <!-- Emerald accent spark -->
+  <circle cx="44" cy="20" r="3" fill="#2E8B62" />
+</svg>
