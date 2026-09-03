@@ -175,8 +175,8 @@ node server/test-e2e.js
 
 ### Option 2: Linux / VPS / Ubuntu with PM2
 ```bash
-git clone https://github.com/PraveeNithi/elyra-visual-studio.git
-cd elyra-visual-studio
+git clone https://github.com/PraveeNithi/ELYRA-VISUAL-STUDIO-.git
+cd ELYRA-VISUAL-STUDIO-
 npm install --production
 npm install -g pm2
 pm2 start server/server.js --name "elyra-studio"
