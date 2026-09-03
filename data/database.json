@@ -1,0 +1,120 @@
+{
+  "projects": [
+    {
+      "id": "ELY-1004",
+      "fullName": "Rohan Deshmukh",
+      "businessName": "Veritas Renewable Energy",
+      "phone": "+91 98765 00112",
+      "email": "rohan@veritasenergy.in",
+      "services": [
+        "Logo Design",
+        "Branding",
+        "Website"
+      ],
+      "requirements": "We require a modern logo mark, complete sustainability brand guidelines, and a responsive 4-page corporate website with inquiry capture.",
+      "timeline": "2-3 weeks",
+      "status": "In Progress",
+      "notes": "Brand moodboard presentation scheduled for Friday.",
+      "createdAt": "2026-09-03T14:15:27.387Z",
+      "updatedAt": "2026-09-03T14:15:27.412Z"
+    },
+    {
+      "id": "ELY-1001",
+      "fullName": "Kavitha R.",
+      "businessName": "Aura Botanical Skincare",
+      "phone": "+91 98765 43210",
+      "email": "contact@aurabotanicals.in",
+      "services": [
+        "Branding",
+        "Logo Design",
+        "Visiting Card"
+      ],
+      "requirements": "We need a complete earthy, premium visual identity for our organic skincare line, including primary logo, secondary badge, visiting cards and brand color guidelines.",
+      "timeline": "2-3 weeks",
+      "status": "In Progress",
+      "notes": "Initial brand moodboard approved. Working on final vector lockups.",
+      "createdAt": "2026-08-31T14:10:01.013Z",
+      "updatedAt": "2026-09-02T14:10:01.013Z"
+    },
+    {
+      "id": "ELY-1002",
+      "fullName": "Vikram Mehta",
+      "businessName": "Apex Logistics Tech",
+      "phone": "+91 91234 56789",
+      "email": "vikram@apexlogistics.io",
+      "services": [
+        "Website",
+        "Web Page / Landing Page"
+      ],
+      "requirements": "Modern responsive website for our B2B tech logistics platform with interactive dashboard preview and lead capture flow.",
+      "timeline": "1 month",
+      "status": "Contacted",
+      "notes": "Discovery call scheduled for tomorrow afternoon via Google Meet.",
+      "createdAt": "2026-09-02T14:10:01.013Z",
+      "updatedAt": "2026-09-03T02:10:01.013Z"
+    },
+    {
+      "id": "ELY-1003",
+      "fullName": "Ananya Sharma",
+      "businessName": "Verde Artisan Cafe",
+      "phone": "+91 99887 76655",
+      "email": "hello@verdecafe.com",
+      "services": [
+        "QR Scanner Web Page",
+        "Poster & Social Media Design"
+      ],
+      "requirements": "A clean digital QR menu web app that loads instantly when guests scan the table QR code, plus promotional poster templates for our weekend brunch specials.",
+      "timeline": "Urgent (< 1 week)",
+      "status": "Completed",
+      "notes": "Deployed to production QR landing subdomain. Client very satisfied!",
+      "createdAt": "2026-08-27T14:10:01.013Z",
+      "updatedAt": "2026-09-01T14:10:01.013Z"
+    }
+  ],
+  "notifications": [
+    {
+      "id": "NOTIF-MTLLXLSR-D1C2",
+      "type": "new_request",
+      "title": "New Project Request",
+      "message": "Rohan Deshmukh submitted a request for Veritas Renewable Energy",
+      "clientName": "Rohan Deshmukh",
+      "services": [
+        "Logo Design",
+        "Branding",
+        "Website"
+      ],
+      "projectId": "ELY-1004",
+      "read": false,
+      "createdAt": "2026-09-03T14:15:27.387Z"
+    },
+    {
+      "id": "NOTIF-1001",
+      "type": "new_request",
+      "title": "New Project Request",
+      "message": "Vikram Mehta submitted a project request for Apex Logistics Tech",
+      "clientName": "Vikram Mehta",
+      "services": [
+        "Website",
+        "Web Page / Landing Page"
+      ],
+      "projectId": "ELY-1002",
+      "read": false,
+      "createdAt": "2026-09-02T14:10:01.013Z"
+    },
+    {
+      "id": "NOTIF-1002",
+      "type": "new_request",
+      "title": "New Project Request",
+      "message": "Kavitha R. submitted a project request for Aura Botanical Skincare",
+      "clientName": "Kavitha R.",
+      "services": [
+        "Branding",
+        "Logo Design",
+        "Visiting Card"
+      ],
+      "projectId": "ELY-1001",
+      "read": true,
+      "createdAt": "2026-08-31T14:10:01.013Z"
+    }
+  ]
+}

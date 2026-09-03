@@ -1,0 +1,28 @@
+{
+  "name": "elyra-visual-studio",
+  "version": "1.0.0",
+  "description": "ELYRA Visual Studio — Designs that build brands. Complete professional website and admin dashboard.",
+  "main": "server/server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "node --watch server/server.js",
+    "test": "node server/test-api.js"
+  },
+  "keywords": [
+    "creative-studio",
+    "branding",
+    "web-design",
+    "portfolio",
+    "admin-dashboard",
+    "elyra"
+  ],
+  "author": "PraveeNithi",
+  "license": "MIT",
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2"
+  }
+}

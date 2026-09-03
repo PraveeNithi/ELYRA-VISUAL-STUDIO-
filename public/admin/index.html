@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ELYRA Studio — Private Admin Dashboard</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  
+  <link rel="stylesheet" href="/admin/admin.css">
+</head>
+<body>
+
+  <!-- ==========================================
+       1. SECURE ADMIN LOGIN SCREEN
+       ========================================== -->
+  <div class="admin-login-screen" id="admin-login-screen">
+    <div class="login-card">
+      <div class="login-logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 4h16v3H8v4h10v3H8v4h12v3H4V4z" fill="currentColor"/>
+        </svg>
+      </div>
+      <h2>ELYRA Visual Studio</h2>
+      <p>Private Studio Administration Portal</p>
+
+      <div class="login-error-box" id="login-error-msg"></div>
+
+      <form class="login-form" id="admin-login-form">
+        <div class="admin-input-group">
+          <label class="admin-label" for="admin-username">Admin Username</label>
+          <input type="text" id="admin-username" class="admin-input" placeholder="admin" required autofocus autocomplete="username">
+        </div>
+
+        <div class="admin-input-group">
+          <label class="admin-label" for="admin-password">Secure Password</label>
+          <input type="password" id="admin-password" class="admin-input" placeholder="••••••••••••" required autocomplete="current-password">
+        </div>
+
+        <button type="submit" class="admin-btn-primary" style="margin-top:0.5rem;">
+          <span>Enter Dashboard</span>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       2. PROTECTED ADMIN APP DASHBOARD
+       ========================================== -->
+  <div class="admin-app" id="admin-app">
+    <!-- Topbar -->
+    <header class="admin-topbar">
+      <div class="admin-brand-wrap">
+        <div style="width:32px; height:32px; border-radius:8px; background:var(--color-gold); color:var(--color-forest); display:flex; align-items:center; justify-content:center; font-weight:800;">
+          E
+        </div>
+        <span class="admin-brand-name">ELYRA Visual Studio</span>
+        <span class="admin-badge-tag">ADMIN</span>
+      </div>
+
+      <div class="admin-topbar-actions">
+        <!-- Notification Bell -->
+        <button class="notif-bell-btn" id="notif-bell-btn" aria-label="Notifications" title="Notifications">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+          <span class="notif-counter-badge hidden" id="notif-counter-badge">0</span>
+        </button>
+
+        <span class="admin-user-info">Logged in as <strong>Admin</strong></span>
+        <button class="admin-logout-btn" id="admin-logout-btn">Log Out</button>
+      </div>
+    </header>
+
+    <!-- Notification Drawer -->
+    <div class="notif-drawer" id="notif-drawer">
+      <div class="notif-drawer-header">
+        <h4>Notifications</h4>
+        <button class="mark-all-read-btn" id="mark-all-read-btn">Mark all read</button>
+      </div>
+      <div class="notif-list-body" id="notif-list-body">
+        <!-- Injected dynamically by admin.js -->
+      </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <main class="admin-main-container">
+      <!-- 4 Overview Metric Cards -->
+      <div class="metrics-row">
+        <!-- New Requests -->
+        <div class="metric-card metric-new">
+          <div class="metric-info">
+            <h4>New Requests</h4>
+            <div class="metric-val" id="metric-val-new">0</div>
+          </div>
+          <div class="metric-icon-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+        </div>
+
+        <!-- Total Requests -->
+        <div class="metric-card metric-total">
+          <div class="metric-info">
+            <h4>Total Requests</h4>
+            <div class="metric-val" id="metric-val-total">0</div>
+          </div>
+          <div class="metric-icon-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          </div>
+        </div>
+
+        <!-- In Progress -->
+        <div class="metric-card metric-progress">
+          <div class="metric-info">
+            <h4>In Progress</h4>
+            <div class="metric-val" id="metric-val-progress">0</div>
+          </div>
+          <div class="metric-icon-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+        </div>
+
+        <!-- Completed -->
+        <div class="metric-card metric-completed">
+          <div class="metric-info">
+            <h4>Completed</h4>
+            <div class="metric-val" id="metric-val-completed">0</div>
+          </div>
+          <div class="metric-icon-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Project Requests Card -->
+      <div class="admin-content-card">
+        <div class="admin-card-header">
+          <div class="admin-card-title-group">
+            <h3>Client Project Requests</h3>
+            <p>Manage incoming design briefs, service requirements, and project progression.</p>
+          </div>
+
+          <!-- Controls: Search, Filter, Refresh -->
+          <div class="admin-filter-controls">
+            <div class="search-input-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="text" id="project-search-input" placeholder="Search client, business or service...">
+            </div>
+
+            <select class="status-filter-select" id="status-filter-select">
+              <option value="all">All Statuses</option>
+              <option value="New">Status: New</option>
+              <option value="Contacted">Status: Contacted</option>
+              <option value="In Progress">Status: In Progress</option>
+              <option value="Completed">Status: Completed</option>
+            </select>
+
+            <button class="btn-icon-action" id="btn-refresh-data" title="Refresh Data">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Table Container -->
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Client & Business</th>
+                <th>Contact</th>
+                <th>Selected Services</th>
+                <th>Timeline & Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="projects-table-body">
+              <!-- Populated dynamically by admin.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ==========================================
+       3. PROJECT DETAIL & NOTES MODAL
+       ========================================== -->
+  <div class="admin-modal-overlay" id="project-detail-modal" role="dialog" aria-modal="true">
+    <div class="admin-modal-box">
+      <div class="admin-modal-head">
+        <h3 id="detail-modal-title">Project Request Details</h3>
+        <button class="modal-close-btn" data-action="close-admin-modal" style="background:rgba(255,255,255,0.15); color:#FFF;">×</button>
+      </div>
+      <div class="admin-modal-body" id="project-detail-body">
+        <!-- Injected dynamically by admin.js -->
+      </div>
+    </div>
+  </div>
+
+  <script src="/admin/admin.js"></script>
+</body>
+</html>

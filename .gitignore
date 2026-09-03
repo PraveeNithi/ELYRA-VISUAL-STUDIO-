@@ -1,0 +1,20 @@
+# Node dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment secrets
+.env
+.env.local
+.env.production
+
+# Temporary & cache
+.DS_Store
+Thumbs.db
+*.tmp
+.cache/
+
+# System logs
+logs/
+*.log
