@@ -381,7 +381,7 @@ function initContactQuickForm() {
 
     // Direct WhatsApp Bridge
     const text = encodeURIComponent(`Hello ELYRA Visual Studio! My name is ${name} (${phone}). ${message ? `I'm inquiring about: ${message}` : 'I would like to discuss a project with your studio.'}`);
-    window.open(`https://wa.me/919876543210?text=${text}`, '_blank');
+    window.open(`https://wa.me/919345768934?text=${text}`, '_blank');
     form.reset();
   });
 }

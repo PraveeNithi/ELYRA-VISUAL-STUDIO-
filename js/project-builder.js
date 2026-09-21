@@ -438,7 +438,7 @@ class ProjectBuilder {
         const whatsappBtn = document.getElementById('success-whatsapp-link');
         if (whatsappBtn) {
           const waMsg = encodeURIComponent(`Hi ELYRA Visual Studio! I just submitted project request ${assignedId} for ${businessName}. Looking forward to discussing!`);
-          whatsappBtn.href = `https://wa.me/919876543210?text=${waMsg}`;
+          whatsappBtn.href = `https://wa.me/919345768934?text=${waMsg}`;
         }
 
         this.goToStep(3);
