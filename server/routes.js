@@ -17,10 +17,20 @@ router.get('/health', (req, res) => {
   });
 });
 
-// Client Project Submission
-router.post('/projects', (req, res) => {
+// Client Registration / Project Submission
+const handleRegistration = (req, res) => {
   try {
-    const { fullName, businessName, phone, email, services, requirements, timeline } = req.body;
+    const {
+      fullName,
+      businessName,
+      phone,
+      email,
+      address,
+      services,
+      selectedWork,
+      requirements,
+      timeline
+    } = req.body;
 
     // Field validations
     const errors = [];
@@ -28,16 +38,20 @@ router.post('/projects', (req, res) => {
       errors.push('Full Name is required (at least 2 characters).');
     }
     if (!businessName || typeof businessName !== 'string' || businessName.trim().length < 2) {
-      errors.push('Business Name is required.');
+      errors.push('Business Name / Project Title is required.');
     }
     if (!phone || typeof phone !== 'string' || phone.trim().length < 6) {
       errors.push('Valid Phone / WhatsApp Number is required.');
     }
-    if (!Array.isArray(services) || services.length === 0) {
-      errors.push('Please select at least one service.');
+    const finalServices = Array.isArray(services) && services.length > 0
+      ? services
+      : (Array.isArray(selectedWork) && selectedWork.length > 0 ? selectedWork : []);
+
+    if (finalServices.length === 0) {
+      errors.push('Please select at least one work / service category.');
     }
     if (!requirements || typeof requirements !== 'string' || requirements.trim().length < 5) {
-      errors.push('Please provide some project requirements or goals.');
+      errors.push('Please provide project requirements or application details.');
     }
 
     if (errors.length > 0) {
@@ -53,48 +67,51 @@ router.post('/projects', (req, res) => {
       businessName,
       phone,
       email,
-      services,
+      address,
+      services: finalServices,
+      selectedWork: finalServices,
       requirements,
       timeline
     });
 
     return res.status(201).json({
       success: true,
-      message: 'Project request received successfully!',
+      message: 'Client registration submitted successfully!',
       projectId: result.project.id,
-      project: {
-        id: result.project.id,
-        fullName: result.project.fullName,
-        businessName: result.project.businessName,
-        services: result.project.services,
-        createdAt: result.project.createdAt
-      }
+      referenceToken: result.project.id,
+      registrationNumber: result.project.id,
+      registration: result.project,
+      project: result.project
     });
   } catch (error) {
-    console.error('Error handling project submission:', error);
+    console.error('Error handling registration submission:', error);
     return res.status(500).json({
       success: false,
-      message: 'Internal server error while saving project request.'
+      message: 'Internal server error while saving registration.'
     });
   }
-});
+};
+
+router.post('/projects', handleRegistration);
+router.post('/registrations', handleRegistration);
 
 // ==========================================
 // ADMIN AUTHENTICATION
 // ==========================================
 
 router.post('/admin/login', (req, res) => {
-  const { username, password } = req.body;
+  const { username, email, password } = req.body;
+  const identifier = email || username;
 
-  if (!username || !password) {
+  if (!identifier || !password) {
     return res.status(400).json({
       success: false,
-      error: 'Username and password are required.'
+      error: 'Email/Username and password are required.'
     });
   }
 
-  if (auth.verifyAdminCredentials(username, password)) {
-    const token = auth.createSession();
+  if (auth.verifyAdminCredentials(identifier, password)) {
+    const token = auth.createSession(identifier);
 
     // Set cookie
     res.cookie('elyra_admin_token', token, {
@@ -109,13 +126,14 @@ router.post('/admin/login', (req, res) => {
       message: 'Admin login successful',
       token,
       admin: {
-        username: username
+        username: identifier,
+        email: identifier.includes('@') ? identifier : 'elyravisualstudio@gmail.com'
       }
     });
   } else {
     return res.status(401).json({
       success: false,
-      error: 'Invalid username or password.'
+      error: 'Invalid admin credentials. Please enter the correct email and secure password.'
     });
   }
 });
@@ -143,7 +161,8 @@ router.get('/admin/check-auth', (req, res) => {
   return res.json({
     authenticated: true,
     admin: {
-      username: session.username
+      username: session.username,
+      email: session.username
     }
   });
 });
@@ -168,38 +187,45 @@ router.get('/admin/stats', (req, res) => {
   }
 });
 
-// Get Project Requests (with search and status filters)
-router.get('/admin/projects', (req, res) => {
+// Get Registrations / Project Requests (with search, work, dateRange and status filters)
+const handleGetProjects = (req, res) => {
   try {
-    const { status, search } = req.query;
-    const projects = db.getProjects({ status, search });
+    const { status, work, dateRange, search } = req.query;
+    const projects = db.getProjects({ status, work, dateRange, search });
     res.json({
       success: true,
       count: projects.length,
+      registrations: projects,
       projects
     });
   } catch (error) {
-    console.error('Error fetching projects:', error);
-    res.status(500).json({ success: false, error: 'Failed to fetch project requests' });
+    console.error('Error fetching registrations:', error);
+    res.status(500).json({ success: false, error: 'Failed to fetch registrations' });
   }
-});
+};
 
-// Get Single Project
-router.get('/admin/projects/:id', (req, res) => {
+router.get('/admin/projects', handleGetProjects);
+router.get('/admin/registrations', handleGetProjects);
+
+// Get Single Registration / Project
+const handleGetSingleProject = (req, res) => {
   try {
     const project = db.getProjectById(req.params.id);
     if (!project) {
-      return res.status(404).json({ success: false, error: 'Project request not found' });
+      return res.status(404).json({ success: false, error: 'Registration not found' });
     }
-    res.json({ success: true, project });
+    res.json({ success: true, registration: project, project });
   } catch (error) {
-    console.error('Error fetching project:', error);
-    res.status(500).json({ success: false, error: 'Failed to fetch project' });
+    console.error('Error fetching registration:', error);
+    res.status(500).json({ success: false, error: 'Failed to fetch registration' });
   }
-});
+};
 
-// Update Project Status (New -> Contacted -> In Progress -> Completed)
-router.patch('/admin/projects/:id/status', (req, res) => {
+router.get('/admin/projects/:id', handleGetSingleProject);
+router.get('/admin/registrations/:id', handleGetSingleProject);
+
+// Update Project Status
+const handleUpdateStatus = (req, res) => {
   try {
     const { status } = req.body;
     if (!status) {
@@ -208,52 +234,63 @@ router.patch('/admin/projects/:id/status', (req, res) => {
 
     const updated = db.updateProjectStatus(req.params.id, status);
     if (!updated) {
-      return res.status(404).json({ success: false, error: 'Project request not found' });
+      return res.status(404).json({ success: false, error: 'Registration not found' });
     }
 
     res.json({
       success: true,
-      message: `Project status updated to ${status}`,
+      message: `Registration status updated to ${updated.status}`,
+      registration: updated,
       project: updated
     });
   } catch (error) {
     console.error('Error updating status:', error);
     res.status(400).json({ success: false, error: error.message || 'Failed to update status' });
   }
-});
+};
+
+router.patch('/admin/projects/:id/status', handleUpdateStatus);
+router.patch('/admin/registrations/:id/status', handleUpdateStatus);
 
 // Update Project Internal Notes
-router.patch('/admin/projects/:id/notes', (req, res) => {
+const handleUpdateNotes = (req, res) => {
   try {
     const { notes } = req.body;
     const updated = db.updateProjectNotes(req.params.id, notes);
     if (!updated) {
-      return res.status(404).json({ success: false, error: 'Project request not found' });
+      return res.status(404).json({ success: false, error: 'Registration not found' });
     }
     res.json({
       success: true,
-      message: 'Project notes updated',
+      message: 'Registration notes updated',
+      registration: updated,
       project: updated
     });
   } catch (error) {
     console.error('Error updating notes:', error);
     res.status(500).json({ success: false, error: 'Failed to update notes' });
   }
-});
+};
+
+router.patch('/admin/projects/:id/notes', handleUpdateNotes);
+router.patch('/admin/registrations/:id/notes', handleUpdateNotes);
 
 // Delete Project Request
-router.delete('/admin/projects/:id', (req, res) => {
+const handleDeleteProject = (req, res) => {
   try {
     const deleted = db.deleteProject(req.params.id);
     if (!deleted) {
-      return res.status(404).json({ success: false, error: 'Project not found or already deleted' });
+      return res.status(404).json({ success: false, error: 'Registration not found or already deleted' });
     }
-    res.json({ success: true, message: 'Project request deleted successfully' });
+    res.json({ success: true, message: 'Registration deleted successfully' });
   } catch (error) {
-    console.error('Error deleting project:', error);
-    res.status(500).json({ success: false, error: 'Failed to delete project' });
+    console.error('Error deleting registration:', error);
+    res.status(500).json({ success: false, error: 'Failed to delete registration' });
   }
-});
+};
+
+router.delete('/admin/projects/:id', handleDeleteProject);
+router.delete('/admin/registrations/:id', handleDeleteProject);
 
 // Get Notifications
 router.get('/admin/notifications', (req, res) => {

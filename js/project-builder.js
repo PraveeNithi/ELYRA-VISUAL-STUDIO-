@@ -322,7 +322,8 @@ class ProjectBuilder {
     const fullName = document.getElementById('client-fullname').value.trim();
     const businessName = document.getElementById('client-business').value.trim();
     const phone = document.getElementById('client-phone').value.trim();
-    const email = document.getElementById('client-email').value.trim();
+    const email = document.getElementById('client-email') ? document.getElementById('client-email').value.trim() : '';
+    const address = document.getElementById('client-address') ? document.getElementById('client-address').value.trim() : '';
     const requirements = document.getElementById('client-requirements').value.trim();
     const timeline = document.getElementById('client-timeline').value;
 
@@ -356,7 +357,7 @@ class ProjectBuilder {
       this.submitBtn.disabled = true;
       this.submitBtn.innerHTML = `
         <span class="btn-spinner"></span>
-        Submitting Request...
+        Submitting Registration...
       `;
     }
 
@@ -366,12 +367,16 @@ class ProjectBuilder {
         businessName,
         phone,
         email,
+        address,
         services: Array.from(this.selectedServices),
+        selectedWork: Array.from(this.selectedServices),
         requirements,
-        timeline
+        timeline,
+        status: 'Pending'
       };
 
-      let assignedId = `ELY-${Math.floor(1004 + Math.random() * 8000)}`;
+      const currentYear = new Date().getFullYear();
+      let assignedId = `ELYRA-${currentYear}-${Math.floor(1004 + Math.random() * 8000)}`;
       let isSuccess = false;
 
       // Try Node.js Backend API
@@ -384,7 +389,7 @@ class ProjectBuilder {
         if (response.ok) {
           const data = await response.json();
           if (data.success) {
-            assignedId = data.projectId || assignedId;
+            assignedId = data.referenceToken || data.registrationNumber || data.projectId || assignedId;
             isSuccess = true;
           }
         }
@@ -398,14 +403,18 @@ class ProjectBuilder {
           const localProjects = JSON.parse(localStorage.getItem('elyra_projects_db') || '[]');
           const newEntry = {
             id: assignedId,
+            referenceToken: assignedId,
+            registrationNumber: assignedId,
             fullName,
             businessName,
             phone,
             email,
+            address,
             services: Array.from(this.selectedServices),
+            selectedWork: Array.from(this.selectedServices),
             requirements,
             timeline: timeline || 'Flexible',
-            status: 'New',
+            status: 'Pending',
             notes: '',
             createdAt: new Date().toISOString()
           };
@@ -415,11 +424,12 @@ class ProjectBuilder {
           const localNotifs = JSON.parse(localStorage.getItem('elyra_notifs_db') || '[]');
           localNotifs.unshift({
             id: `NOTIF-${Date.now()}`,
-            title: 'New Project Request',
-            message: `${fullName} submitted a request for ${businessName}`,
+            title: 'New Client Registration',
+            message: `${fullName} registered for ${businessName} [${assignedId}]`,
             clientName: fullName,
             services: Array.from(this.selectedServices),
             projectId: assignedId,
+            referenceToken: assignedId,
             read: false,
             createdAt: new Date().toISOString()
           });
@@ -437,12 +447,12 @@ class ProjectBuilder {
 
         const whatsappBtn = document.getElementById('success-whatsapp-link');
         if (whatsappBtn) {
-          const waMsg = encodeURIComponent(`Hi ELYRA Visual Studio! I just submitted project request ${assignedId} for ${businessName}. Looking forward to discussing!`);
+          const waMsg = encodeURIComponent(`Hi ELYRA Visual Studio! I just registered for a project (Reference No: ${assignedId}) for ${businessName}. Looking forward to connecting!`);
           whatsappBtn.href = `https://wa.me/919345768934?text=${waMsg}`;
         }
 
         this.goToStep(3);
-        this.showToast('Project request received successfully!', 'success');
+        this.showToast('Registration submitted successfully!', 'success');
 
         this.projectForm.reset();
         this.selectedServices.clear();

@@ -1,6 +1,76 @@
 {
   "projects": [
     {
+      "id": "ELYRA-2026-1008",
+      "referenceToken": "ELYRA-2026-1008",
+      "registrationNumber": "ELYRA-2026-1008",
+      "fullName": "Praveen Nithi (Test Client)",
+      "businessName": "ELYRA Creative Studio Labs",
+      "phone": "+91 93457 68934",
+      "email": "praveen@elyrastudio.com",
+      "address": "MG Road, Bengaluru, Karnataka",
+      "services": [
+        "Logo Design",
+        "Branding",
+        "Website"
+      ],
+      "selectedWork": [
+        "Logo Design",
+        "Branding",
+        "Website"
+      ],
+      "requirements": "Complete brand visual identity system, stationery, and responsive studio web application.",
+      "timeline": "2-3 weeks",
+      "status": "Pending",
+      "notes": "",
+      "createdAt": "2026-09-22T14:26:11.272Z",
+      "updatedAt": "2026-09-22T14:26:11.272Z"
+    },
+    {
+      "id": "ELYRA-2026-1007",
+      "referenceToken": "ELYRA-2026-1007",
+      "registrationNumber": "ELYRA-2026-1007",
+      "fullName": "Rohan Deshmukh",
+      "businessName": "Veritas Renewable Energy",
+      "phone": "+91 98765 00112",
+      "email": "rohan@veritasenergy.in",
+      "address": "Lavelle Road, Bengaluru, Karnataka",
+      "services": [
+        "Logo Design",
+        "Branding",
+        "Website"
+      ],
+      "selectedWork": [
+        "Logo Design",
+        "Branding",
+        "Website"
+      ],
+      "requirements": "We require a modern logo mark, complete sustainability brand guidelines, and a responsive 4-page corporate website with inquiry capture.",
+      "timeline": "2-3 weeks",
+      "status": "Approved",
+      "notes": "Brand moodboard presentation scheduled for Friday 3 PM.",
+      "createdAt": "2026-09-22T14:21:28.554Z",
+      "updatedAt": "2026-09-22T14:21:28.583Z"
+    },
+    {
+      "id": "ELY-1006",
+      "fullName": "Rohan Deshmukh",
+      "businessName": "Veritas Renewable Energy",
+      "phone": "+91 98765 00112",
+      "email": "rohan@veritasenergy.in",
+      "services": [
+        "Logo Design",
+        "Branding",
+        "Website"
+      ],
+      "requirements": "We require a modern logo mark, complete sustainability brand guidelines, and a responsive 4-page corporate website with inquiry capture.",
+      "timeline": "2-3 weeks",
+      "status": "In Progress",
+      "notes": "Brand moodboard presentation scheduled for Friday.",
+      "createdAt": "2026-09-03T15:10:27.756Z",
+      "updatedAt": "2026-09-03T15:10:27.790Z"
+    },
+    {
       "id": "ELY-1005",
       "fullName": "Rohan Deshmukh",
       "businessName": "Veritas Renewable Energy",
@@ -90,6 +160,53 @@
     }
   ],
   "notifications": [
+    {
+      "id": "NOTIF-MUCROLAG-A324",
+      "type": "new_registration",
+      "title": "New Client Registration",
+      "message": "Praveen Nithi (Test Client) registered for ELYRA Creative Studio Labs [ELYRA-2026-1008]",
+      "clientName": "Praveen Nithi (Test Client)",
+      "services": [
+        "Logo Design",
+        "Branding",
+        "Website"
+      ],
+      "projectId": "ELYRA-2026-1008",
+      "referenceToken": "ELYRA-2026-1008",
+      "read": false,
+      "createdAt": "2026-09-22T14:26:11.272Z"
+    },
+    {
+      "id": "NOTIF-MUCRIJ56-FBB5",
+      "type": "new_registration",
+      "title": "New Client Registration",
+      "message": "Rohan Deshmukh registered for Veritas Renewable Energy [ELYRA-2026-1007]",
+      "clientName": "Rohan Deshmukh",
+      "services": [
+        "Logo Design",
+        "Branding",
+        "Website"
+      ],
+      "projectId": "ELYRA-2026-1007",
+      "referenceToken": "ELYRA-2026-1007",
+      "read": false,
+      "createdAt": "2026-09-22T14:21:28.554Z"
+    },
+    {
+      "id": "NOTIF-MTLNWCDO-A6D5",
+      "type": "new_request",
+      "title": "New Project Request",
+      "message": "Rohan Deshmukh submitted a request for Veritas Renewable Energy",
+      "clientName": "Rohan Deshmukh",
+      "services": [
+        "Logo Design",
+        "Branding",
+        "Website"
+      ],
+      "projectId": "ELY-1006",
+      "read": false,
+      "createdAt": "2026-09-03T15:10:27.756Z"
+    },
     {
       "id": "NOTIF-MTLNR72U-F629",
       "type": "new_request",

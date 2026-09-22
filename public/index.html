@@ -105,11 +105,15 @@
       </a>
     </div>
 
-    <div class="mobile-drawer-footer">
+    <div class="mobile-drawer-footer" style="display:flex; flex-direction:column; gap:0.5rem;">
       <button class="btn btn-gold" style="width:100%;" data-action="open-project-builder">
         <span>Start a Project</span>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
       </button>
+      <a href="./admin/index.html" class="btn btn-outline" style="width:100%; justify-content:center;" data-action="open-admin-login-modal">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+        <span>Admin Portal</span>
+      </a>
     </div>
   </div>
 
@@ -823,6 +827,12 @@
       <div class="footer-bottom">
         <div>© 2026 ELYRA Visual Studio. All rights reserved.</div>
         <div>Designs that build brands • Creative Design • Branding • Web Design</div>
+        <div>
+          <a href="./admin/index.html" data-action="open-admin-login-modal" id="footer-admin-link" style="color:var(--color-gold); text-decoration:none; font-weight:700; font-size:0.85rem; display:inline-flex; align-items:center; gap:4px;">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            <span>Admin Portal</span>
+          </a>
+        </div>
       </div>
     </div>
   </footer>
@@ -914,6 +924,12 @@
               <div class="form-group">
                 <label class="form-label" for="client-email">Email Address <span class="optional">(optional)</span></label>
                 <input type="email" id="client-email" class="form-input" placeholder="contact@example.com">
+              </div>
+
+              <!-- Address / Location -->
+              <div class="form-group full-width">
+                <label class="form-label" for="client-address">Address / Location <span class="optional">(optional)</span></label>
+                <input type="text" id="client-address" class="form-input" placeholder="e.g. Richmond Town, Bengaluru, Karnataka">
               </div>
 
               <!-- Preferred Timeline -->
@@ -1035,7 +1051,45 @@
   </div>
 
   <!-- ==========================================
-       13. LIVE TOAST NOTIFICATION CONTAINER
+       13. ADMIN PORTAL LOGIN MODAL
+       ========================================== -->
+  <div class="modal-overlay" id="home-admin-modal" role="dialog" aria-modal="true" aria-labelledby="home-admin-modal-title">
+    <div class="modal-dialog" style="max-width: 440px;">
+      <div class="modal-header">
+        <div class="modal-header-text">
+          <h3 id="home-admin-modal-title">Studio Administration</h3>
+          <p>Login to access the private Admin Portal</p>
+        </div>
+        <button class="modal-close-btn" data-action="close-admin-modal" aria-label="Close modal">×</button>
+      </div>
+      <div class="modal-scrollable-body" style="padding: 1.5rem 1.75rem;">
+        <div class="login-error-box" id="home-admin-error" style="display:none; background:#FFEBEE; color:#C62828; padding:0.75rem 1rem; border-radius:8px; font-size:0.85rem; font-weight:600; margin-bottom:1rem; border:1px solid #FFCDD2;"></div>
+        
+        <form id="home-admin-login-form">
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label class="form-label" for="home-admin-email">Admin Email *</label>
+            <input type="text" id="home-admin-email" class="form-input" placeholder="elyravisualstudio@gmail.com" required autocomplete="username">
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1.5rem;">
+            <label class="form-label" for="home-admin-pass">Admin Password *</label>
+            <input type="password" id="home-admin-pass" class="form-input" placeholder="••••••••••••" required autocomplete="current-password">
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:0.75rem;">
+            <button type="submit" class="btn btn-gold" id="home-admin-submit-btn" style="width:100%; justify-content:center;">
+              <span>Login & Open Admin Portal</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+            <button type="button" class="btn btn-outline" data-action="close-admin-modal" style="width:100%; justify-content:center;">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       14. LIVE TOAST NOTIFICATION CONTAINER
        ========================================== -->
   <div class="toast-container" id="toast-container" aria-live="polite"></div>
 

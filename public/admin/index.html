@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ELYRA Studio — Private Admin Dashboard</title>
+  <title>ELYRA Visual Studio — Admin Portal & Registration Management</title>
   <link rel="icon" type="image/svg+xml" href="../favicon.svg">
   
   <link rel="stylesheet" href="./admin.css">
@@ -21,26 +21,32 @@
         </svg>
       </div>
       <h2>ELYRA Visual Studio</h2>
-      <p>Private Studio Administration Portal</p>
+      <p>Administration Portal & Registration Manager</p>
 
       <div class="login-error-box" id="login-error-msg"></div>
 
       <form class="login-form" id="admin-login-form">
         <div class="admin-input-group">
-          <label class="admin-label" for="admin-username">Admin Username</label>
-          <input type="text" id="admin-username" class="admin-input" placeholder="admin" required autofocus autocomplete="username">
+          <label class="admin-label" for="admin-username">Admin Email</label>
+          <input type="text" id="admin-username" class="admin-input" placeholder="elyravisualstudio@gmail.com" required autofocus autocomplete="username">
         </div>
 
         <div class="admin-input-group">
-          <label class="admin-label" for="admin-password">Secure Password</label>
+          <label class="admin-label" for="admin-password">Secure Admin Password</label>
           <input type="password" id="admin-password" class="admin-input" placeholder="••••••••••••" required autocomplete="current-password">
         </div>
 
-        <button type="submit" class="admin-btn-primary" style="margin-top:0.5rem;">
-          <span>Enter Dashboard</span>
+        <button type="submit" class="admin-btn-primary" id="btn-admin-login-submit" style="margin-top:0.5rem;">
+          <span>Login to Admin Portal</span>
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
         </button>
       </form>
+
+      <div style="margin-top:1.25rem; text-align:center;">
+        <a href="../index.html" style="font-size:0.85rem; color:var(--color-text-muted); text-decoration:none; display:inline-flex; align-items:center; gap:4px;">
+          ← Back to Main Studio Website
+        </a>
+      </div>
     </div>
   </div>
 
@@ -51,14 +57,19 @@
     <!-- Topbar -->
     <header class="admin-topbar">
       <div class="admin-brand-wrap">
-        <div style="width:32px; height:32px; border-radius:8px; background:var(--color-gold); color:var(--color-forest); display:flex; align-items:center; justify-content:center; font-weight:800;">
+        <div style="width:34px; height:34px; border-radius:8px; background:var(--color-gold); color:var(--color-forest); display:flex; align-items:center; justify-content:center; font-weight:800; font-family:'Outfit', sans-serif;">
           E
         </div>
         <span class="admin-brand-name">ELYRA Visual Studio</span>
-        <span class="admin-badge-tag">ADMIN</span>
+        <span class="admin-badge-tag">ADMIN PORTAL</span>
       </div>
 
       <div class="admin-topbar-actions">
+        <a href="../index.html" class="topbar-website-link" title="Open Main Website" target="_blank">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          <span>View Website</span>
+        </a>
+
         <!-- Notification Bell -->
         <button class="notif-bell-btn" id="notif-bell-btn" aria-label="Notifications" title="Notifications">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -68,7 +79,7 @@
           <span class="notif-counter-badge hidden" id="notif-counter-badge">0</span>
         </button>
 
-        <span class="admin-user-info">Logged in as <strong>Admin</strong></span>
+        <span class="admin-user-info">Logged in as <strong id="admin-user-display">elyravisualstudio@gmail.com</strong></span>
         <button class="admin-logout-btn" id="admin-logout-btn">Log Out</button>
       </div>
     </header>
@@ -76,7 +87,7 @@
     <!-- Notification Drawer -->
     <div class="notif-drawer" id="notif-drawer">
       <div class="notif-drawer-header">
-        <h4>Notifications</h4>
+        <h4>Recent Registration Alerts</h4>
         <button class="mark-all-read-btn" id="mark-all-read-btn">Mark all read</button>
       </div>
       <div class="notif-list-body" id="notif-list-body">
@@ -86,27 +97,38 @@
 
     <!-- Main Content Area -->
     <main class="admin-main-container">
-      <!-- 4 Overview Metric Cards -->
+      <!-- 5 Metric Cards -->
       <div class="metrics-row">
-        <!-- New Requests -->
-        <div class="metric-card metric-new">
-          <div class="metric-info">
-            <h4>New Requests</h4>
-            <div class="metric-val" id="metric-val-new">0</div>
-          </div>
-          <div class="metric-icon-box">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-          </div>
-        </div>
-
-        <!-- Total Requests -->
+        <!-- Total Registrations -->
         <div class="metric-card metric-total">
           <div class="metric-info">
-            <h4>Total Requests</h4>
+            <h4>Total Registrations</h4>
             <div class="metric-val" id="metric-val-total">0</div>
           </div>
           <div class="metric-icon-box">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          </div>
+        </div>
+
+        <!-- Pending Registrations -->
+        <div class="metric-card metric-pending">
+          <div class="metric-info">
+            <h4>Pending / New</h4>
+            <div class="metric-val" id="metric-val-pending">0</div>
+          </div>
+          <div class="metric-icon-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+        </div>
+
+        <!-- Approved -->
+        <div class="metric-card metric-approved">
+          <div class="metric-info">
+            <h4>Approved</h4>
+            <div class="metric-val" id="metric-val-approved">0</div>
+          </div>
+          <div class="metric-icon-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
           </div>
         </div>
 
@@ -117,7 +139,7 @@
             <div class="metric-val" id="metric-val-progress">0</div>
           </div>
           <div class="metric-icon-box">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
           </div>
         </div>
 
@@ -131,32 +153,68 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
           </div>
         </div>
+
+        <!-- Rejected -->
+        <div class="metric-card metric-rejected">
+          <div class="metric-info">
+            <h4>Rejected</h4>
+            <div class="metric-val" id="metric-val-rejected">0</div>
+          </div>
+          <div class="metric-icon-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+          </div>
+        </div>
       </div>
 
-      <!-- Project Requests Card -->
+      <!-- Registrations Content Card -->
       <div class="admin-content-card">
         <div class="admin-card-header">
           <div class="admin-card-title-group">
-            <h3>Client Project Requests</h3>
-            <p>Manage incoming design briefs, service requirements, and project progression.</p>
+            <h3>Client Registrations & Work Applications</h3>
+            <p>View complete client details, reference tokens, selected work, address, status, and project briefs.</p>
           </div>
 
-          <!-- Controls: Search, Filter, Refresh -->
+          <!-- Controls: Search, Work Filter, Status Filter, Date Filter, Refresh -->
           <div class="admin-filter-controls">
+            <!-- Search bar -->
             <div class="search-input-wrap">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-              <input type="text" id="project-search-input" placeholder="Search client, business or service...">
+              <input type="text" id="project-search-input" placeholder="Search Token, Client, Phone, Email, Address...">
             </div>
 
-            <select class="status-filter-select" id="status-filter-select">
-              <option value="all">All Statuses</option>
-              <option value="New">Status: New</option>
-              <option value="Contacted">Status: Contacted</option>
-              <option value="In Progress">Status: In Progress</option>
-              <option value="Completed">Status: Completed</option>
+            <!-- Work / Service Filter -->
+            <select class="status-filter-select" id="work-filter-select" title="Filter by Selected Work">
+              <option value="all">All Work / Services</option>
+              <option value="Logo Design">Logo Design</option>
+              <option value="Banner Design">Banner Design</option>
+              <option value="Poster">Poster / Social Media</option>
+              <option value="Branding">Branding</option>
+              <option value="Visiting Card">Visiting Card</option>
+              <option value="Website">Website</option>
+              <option value="Landing Page">Landing Page</option>
+              <option value="QR">QR Scanner Web Page</option>
             </select>
 
-            <button class="btn-icon-action" id="btn-refresh-data" title="Refresh Data">
+            <!-- Status Filter -->
+            <select class="status-filter-select" id="status-filter-select" title="Filter by Registration Status">
+              <option value="all">All Statuses</option>
+              <option value="Pending">Status: Pending</option>
+              <option value="Approved">Status: Approved</option>
+              <option value="In Progress">Status: In Progress</option>
+              <option value="Completed">Status: Completed</option>
+              <option value="Rejected">Status: Rejected</option>
+              <option value="New">Status: New</option>
+            </select>
+
+            <!-- Date Filter -->
+            <select class="status-filter-select" id="date-filter-select" title="Filter by Date">
+              <option value="all">All Time</option>
+              <option value="today">Today</option>
+              <option value="7days">Last 7 Days</option>
+              <option value="30days">Last 30 Days</option>
+            </select>
+
+            <button class="btn-icon-action" id="btn-refresh-data" title="Refresh Live Data">
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
             </button>
           </div>
@@ -167,10 +225,12 @@
           <table class="admin-table">
             <thead>
               <tr>
-                <th>Client & Business</th>
-                <th>Contact</th>
-                <th>Selected Services</th>
-                <th>Timeline & Date</th>
+                <th>Registration No / Token</th>
+                <th>Client Name & Business</th>
+                <th>Contact Information</th>
+                <th>Selected Work</th>
+                <th>Timeline & Address</th>
+                <th>Registration Date</th>
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
@@ -185,12 +245,12 @@
   </div>
 
   <!-- ==========================================
-       3. PROJECT DETAIL & NOTES MODAL
+       3. COMPLETE CLIENT REGISTRATION DETAILS MODAL
        ========================================== -->
   <div class="admin-modal-overlay" id="project-detail-modal" role="dialog" aria-modal="true">
     <div class="admin-modal-box">
       <div class="admin-modal-head">
-        <h3 id="detail-modal-title">Project Request Details</h3>
+        <h3 id="detail-modal-title">Client Registration Details</h3>
         <button class="modal-close-btn" data-action="close-admin-modal" style="background:rgba(255,255,255,0.15); color:#FFF;">×</button>
       </div>
       <div class="admin-modal-body" id="project-detail-body">

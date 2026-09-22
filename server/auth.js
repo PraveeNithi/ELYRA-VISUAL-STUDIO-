@@ -14,16 +14,25 @@ function hashPassword(password, salt) {
 const ADMIN_SALT = crypto.createHash('sha256').update(config.SESSION_SECRET + '_salt').digest('hex').slice(0, 32);
 const EXPECTED_HASH = hashPassword(config.ADMIN_PASSWORD, ADMIN_SALT);
 
-function verifyAdminCredentials(username, password) {
-  if (username !== config.ADMIN_USERNAME) return false;
+function verifyAdminCredentials(identifier, password) {
+  if (!identifier || !password) return false;
+  const idClean = identifier.trim().toLowerCase();
+  const validUsernames = [
+    (config.ADMIN_EMAIL || '').toLowerCase(),
+    (config.ADMIN_USERNAME || '').toLowerCase(),
+    'elyravisualstudio@gmail.com',
+    'admin'
+  ].filter(Boolean);
+
+  if (!validUsernames.includes(idClean)) return false;
   const hash = hashPassword(password, ADMIN_SALT);
   return crypto.timingSafeEqual(Buffer.from(hash), Buffer.from(EXPECTED_HASH));
 }
 
-function createSession() {
+function createSession(username = config.ADMIN_USERNAME) {
   const token = crypto.randomBytes(32).toString('hex');
   const sessionData = {
-    username: config.ADMIN_USERNAME,
+    username: username || 'elyravisualstudio@gmail.com',
     role: 'admin',
     createdAt: Date.now(),
     expiresAt: Date.now() + SESSION_TTL_MS

@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initServiceModals();
   initScrollAnimations();
   initContactQuickForm();
+  initAdminModal();
 });
 
 // ==========================================
@@ -384,4 +385,115 @@ function initContactQuickForm() {
     window.open(`https://wa.me/919345768934?text=${text}`, '_blank');
     form.reset();
   });
+}
+
+// ==========================================
+// 6. ADMIN PORTAL LOGIN MODAL & ROUTING
+// ==========================================
+function initAdminModal() {
+  const modal = document.getElementById('home-admin-modal');
+  const form = document.getElementById('home-admin-login-form');
+  const emailInput = document.getElementById('home-admin-email');
+  const passInput = document.getElementById('home-admin-pass');
+  const errorBox = document.getElementById('home-admin-error');
+  const submitBtn = document.getElementById('home-admin-submit-btn');
+
+  document.querySelectorAll('[data-action="open-admin-login-modal"]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (modal) {
+        modal.classList.add('active');
+        document.body.classList.add('modal-locked');
+        if (errorBox) errorBox.style.display = 'none';
+        if (emailInput) {
+          emailInput.value = 'elyravisualstudio@gmail.com';
+          if (passInput) passInput.focus();
+        }
+      }
+    });
+  });
+
+  document.querySelectorAll('[data-action="close-admin-modal"]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (modal) {
+        modal.classList.remove('active');
+        document.body.classList.remove('modal-locked');
+      }
+    });
+  });
+
+  if (modal) {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.classList.remove('active');
+        document.body.classList.remove('modal-locked');
+      }
+    });
+  }
+
+  if (form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = emailInput ? emailInput.value.trim() : '';
+      const password = passInput ? passInput.value : '';
+
+      if (!email || !password) return;
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = `<span>Verifying...</span>`;
+      }
+
+      let loginSuccess = false;
+
+      // Try Node backend
+      try {
+        const res = await fetch('/api/admin/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, username: email, password })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success) {
+            localStorage.setItem('elyra_admin_token', data.token);
+            localStorage.setItem('elyra_admin_email', email);
+            loginSuccess = true;
+          }
+        }
+      } catch (err) {}
+
+      // Fallback static auth for GitHub pages
+      if (!loginSuccess) {
+        const validEmails = ['elyravisualstudio@gmail.com', 'admin'];
+        if (validEmails.includes(email.toLowerCase()) && (password === 'elyra2026!secure' || password === 'admin')) {
+          localStorage.setItem('elyra_admin_token', 'elyra_static_token_valid');
+          localStorage.setItem('elyra_admin_email', email);
+          loginSuccess = true;
+        }
+      }
+
+      if (loginSuccess) {
+        if (window.elyraBuilder) {
+          window.elyraBuilder.showToast('Admin login successful! Opening Admin Portal...', 'success');
+        }
+        setTimeout(() => {
+          window.location.href = './admin/index.html';
+        }, 500);
+      } else {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = `
+            <span>Login & Open Admin Portal</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          `;
+        }
+        if (errorBox) {
+          errorBox.textContent = 'Invalid credentials. Please enter your designated admin email (elyravisualstudio@gmail.com) and secure password.';
+          errorBox.style.display = 'block';
+        }
+      }
+    });
+  }
 }

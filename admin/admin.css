@@ -297,18 +297,31 @@ body {
 /* ==========================================================================
    ADMIN MAIN CONTENT
    ========================================================================== */
-.admin-main-container {
-  max-width: 1320px;
-  width: 100%;
-  margin: 0 auto;
-  padding: 2.25rem 2rem;
-  flex-grow: 1;
+/* Topbar website link */
+.topbar-website-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-offwhite);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 0.4rem 0.85rem;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.2s;
+}
+
+.topbar-website-link:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: var(--color-gold);
 }
 
 /* Metric Cards Grid */
 .metrics-row {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
   gap: 1.25rem;
   margin-bottom: 2.25rem;
 }
@@ -316,7 +329,7 @@ body {
 .metric-card {
   background: #FFFFFF;
   border-radius: var(--radius-md);
-  padding: 1.5rem;
+  padding: 1.35rem 1.25rem;
   border: 1px solid var(--color-border);
   box-shadow: var(--shadow-sm);
   display: flex;
@@ -331,7 +344,7 @@ body {
 }
 
 .metric-info h4 {
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -341,15 +354,15 @@ body {
 
 .metric-val {
   font-family: var(--font-display);
-  font-size: 2.25rem;
+  font-size: 2rem;
   font-weight: 800;
   color: var(--color-forest);
   line-height: 1;
 }
 
 .metric-icon-box {
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
@@ -357,28 +370,174 @@ body {
 }
 
 .metric-icon-box svg {
-  width: 24px;
-  height: 24px;
-}
-
-.metric-new .metric-icon-box {
-  background: #E3F2FD;
-  color: #1976D2;
+  width: 22px;
+  height: 22px;
 }
 
 .metric-total .metric-icon-box {
-  background: var(--color-forest-08);
+  background: rgba(18, 55, 42, 0.1);
   color: var(--color-forest);
 }
 
-.metric-progress .metric-icon-box {
+.metric-pending .metric-icon-box {
   background: #FFF8E1;
-  color: #FFA000;
+  color: #F57F17;
+}
+
+.metric-approved .metric-icon-box {
+  background: #E8F5E9;
+  color: #2E7D32;
+}
+
+.metric-progress .metric-icon-box {
+  background: #E1F5FE;
+  color: #0288D1;
 }
 
 .metric-completed .metric-icon-box {
   background: #E8F5E9;
-  color: #2E7D32;
+  color: #1B5E20;
+}
+
+.metric-rejected .metric-icon-box {
+  background: #FFEBEE;
+  color: #C62828;
+}
+
+/* Status Badges & Dropdown Classes */
+.status-pending {
+  background: #FFF8E1 !important;
+  color: #F57F17 !important;
+  border-color: #FFE082 !important;
+}
+
+.status-approved {
+  background: #E8F5E9 !important;
+  color: #2E7D32 !important;
+  border-color: #A5D6A7 !important;
+}
+
+.status-in-progress,
+.status-inprogress {
+  background: #E1F5FE !important;
+  color: #0288D1 !important;
+  border-color: #81D4FA !important;
+}
+
+.status-completed {
+  background: #E8F5E9 !important;
+  color: #1B5E20 !important;
+  border-color: #81C784 !important;
+}
+
+.status-rejected {
+  background: #FFEBEE !important;
+  color: #C62828 !important;
+  border-color: #FFCDD2 !important;
+}
+
+.status-new {
+  background: #EDE7F6 !important;
+  color: #512DA8 !important;
+  border-color: #D1C4E9 !important;
+}
+
+/* Status Action Select */
+.status-change-select {
+  padding: 0.35rem 0.65rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.82rem;
+  font-weight: 700;
+  border: 1px solid var(--color-border);
+  background: #FFFFFF;
+  cursor: pointer;
+  outline: none;
+}
+
+.client-business-sub {
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  display: block;
+}
+
+.meta-field-label {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.meta-field-value {
+  font-weight: 700;
+  color: var(--color-forest);
+  font-size: 0.95rem;
+}
+
+.modal-bottom-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--color-border);
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.admin-btn-danger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #FFEBEE;
+  color: #C62828;
+  border: 1px solid #FFCDD2;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.admin-btn-danger:hover {
+  background: #C62828;
+  color: #FFFFFF;
+}
+
+.admin-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--color-surface-subtle);
+  color: var(--color-forest);
+  border: 1px solid var(--color-border);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.admin-btn-secondary:hover {
+  background: var(--color-border);
+}
+
+.btn-delete-action {
+  color: #C62828;
+}
+.btn-delete-action:hover {
+  background: #C62828 !important;
+  color: #FFFFFF !important;
+}
+
+.btn-view-action:hover {
+  background: var(--color-gold) !important;
+  color: var(--color-forest) !important;
 }
 
 /* Tabs & Filter Bar */

@@ -1,3 +1,4 @@
+const fs = require('fs');
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
@@ -24,13 +25,18 @@ app.use((req, res, next) => {
 // API Routes
 app.use('/api', apiRoutes);
 
-// Static assets from public folder
+// Static assets from public folder and root
 const publicDir = path.join(__dirname, '..', 'public');
+const rootDir = path.join(__dirname, '..');
 app.use(express.static(publicDir));
+app.use(express.static(rootDir));
 
 // Explicit route for admin dashboard
 app.get('/admin', (req, res) => {
-  res.sendFile(path.join(publicDir, 'admin', 'index.html'));
+  const adminHtml = fs.existsSync(path.join(publicDir, 'admin', 'index.html'))
+    ? path.join(publicDir, 'admin', 'index.html')
+    : path.join(rootDir, 'admin', 'index.html');
+  res.sendFile(adminHtml);
 });
 
 // Client SPA fallback to home

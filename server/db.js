@@ -102,18 +102,26 @@ function writeDb(data) {
   fs.renameSync(tmpFile, config.DB_FILE);
 }
 
-// Generate human-friendly ID like ELY-1004
+// Generate human-friendly and branded reference token like ELYRA-2026-0001 or ELYRA-2026-1004
 function generateProjectId(existingProjects) {
   let maxNum = 1000;
+  const currentYear = new Date().getFullYear();
   for (const p of existingProjects) {
-    if (p.id && p.id.startsWith('ELY-')) {
-      const num = parseInt(p.id.replace('ELY-', ''), 10);
-      if (!isNaN(num) && num > maxNum) {
-        maxNum = num;
+    if (p.id) {
+      const matchBranded = p.id.match(/ELYRA-\d{4}-(\d+)/);
+      const matchSimple = p.id.match(/ELY-(\d+)/);
+      if (matchBranded && matchBranded[1]) {
+        const num = parseInt(matchBranded[1], 10);
+        if (!isNaN(num) && num > maxNum) maxNum = num;
+      } else if (matchSimple && matchSimple[1]) {
+        const num = parseInt(matchSimple[1], 10);
+        if (!isNaN(num) && num > maxNum) maxNum = num;
       }
     }
   }
-  return `ELY-${maxNum + 1}`;
+  const nextNum = maxNum + 1;
+  const padded = nextNum.toString().padStart(4, '0');
+  return `ELYRA-${currentYear}-${padded}`;
 }
 
 const db = {
@@ -121,17 +129,50 @@ const db = {
     const data = readDb();
     let projects = [...data.projects];
 
+    // Status filter
     if (filters.status && filters.status !== 'all') {
-      projects = projects.filter(p => p.status.toLowerCase() === filters.status.toLowerCase());
+      const targetStatus = filters.status.toLowerCase();
+      projects = projects.filter(p => (p.status || '').toLowerCase() === targetStatus);
     }
 
+    // Work / Service filter
+    if (filters.work && filters.work !== 'all') {
+      const targetWork = filters.work.toLowerCase();
+      projects = projects.filter(p => 
+        (p.services && p.services.some(s => s.toLowerCase().includes(targetWork))) ||
+        (p.selectedWork && p.selectedWork.some(s => s.toLowerCase().includes(targetWork)))
+      );
+    }
+
+    // Date range filter
+    if (filters.dateRange && filters.dateRange !== 'all') {
+      const now = Date.now();
+      projects = projects.filter(p => {
+        const pDate = new Date(p.createdAt).getTime();
+        if (filters.dateRange === 'today') {
+          return (now - pDate) <= 24 * 60 * 60 * 1000;
+        } else if (filters.dateRange === '7days') {
+          return (now - pDate) <= 7 * 24 * 60 * 60 * 1000;
+        } else if (filters.dateRange === '30days') {
+          return (now - pDate) <= 30 * 24 * 60 * 60 * 1000;
+        }
+        return true;
+      });
+    }
+
+    // Full Search query across token, name, email, phone, address, business, services
     if (filters.search) {
-      const q = filters.search.toLowerCase();
+      const q = filters.search.toLowerCase().trim();
       projects = projects.filter(p =>
-        p.fullName.toLowerCase().includes(q) ||
-        p.businessName.toLowerCase().includes(q) ||
-        p.id.toLowerCase().includes(q) ||
-        (p.services && p.services.some(s => s.toLowerCase().includes(q)))
+        (p.fullName && p.fullName.toLowerCase().includes(q)) ||
+        (p.businessName && p.businessName.toLowerCase().includes(q)) ||
+        (p.id && p.id.toLowerCase().includes(q)) ||
+        (p.referenceToken && p.referenceToken.toLowerCase().includes(q)) ||
+        (p.email && p.email.toLowerCase().includes(q)) ||
+        (p.phone && p.phone.toLowerCase().includes(q)) ||
+        (p.address && p.address.toLowerCase().includes(q)) ||
+        (p.services && p.services.some(s => s.toLowerCase().includes(q))) ||
+        (p.requirements && p.requirements.toLowerCase().includes(q))
       );
     }
 
@@ -141,7 +182,7 @@ const db = {
 
   getProjectById(id) {
     const data = readDb();
-    return data.projects.find(p => p.id === id);
+    return data.projects.find(p => p.id === id || p.referenceToken === id);
   },
 
   createProject(projectInput) {
@@ -149,17 +190,25 @@ const db = {
     const id = generateProjectId(data.projects);
     const now = new Date().toISOString();
 
+    const selectedServices = Array.isArray(projectInput.services)
+      ? projectInput.services
+      : (Array.isArray(projectInput.selectedWork) ? projectInput.selectedWork : []);
+
     const newProject = {
       id,
-      fullName: projectInput.fullName.trim(),
-      businessName: projectInput.businessName.trim(),
-      phone: projectInput.phone.trim(),
+      referenceToken: id,
+      registrationNumber: id,
+      fullName: (projectInput.fullName || '').trim(),
+      businessName: (projectInput.businessName || '').trim(),
+      phone: (projectInput.phone || '').trim(),
       email: projectInput.email ? projectInput.email.trim() : '',
-      services: Array.isArray(projectInput.services) ? projectInput.services : [],
-      requirements: projectInput.requirements.trim(),
+      address: projectInput.address ? projectInput.address.trim() : '',
+      services: selectedServices,
+      selectedWork: selectedServices,
+      requirements: (projectInput.requirements || '').trim(),
       timeline: projectInput.timeline || 'Flexible',
-      status: 'New',
-      notes: '',
+      status: projectInput.status || 'Pending',
+      notes: projectInput.notes || '',
       createdAt: now,
       updatedAt: now
     };
@@ -170,12 +219,13 @@ const db = {
     const notifId = `NOTIF-${Date.now().toString(36).toUpperCase()}-${crypto.randomBytes(2).toString('hex').toUpperCase()}`;
     const newNotification = {
       id: notifId,
-      type: 'new_request',
-      title: 'New Project Request',
-      message: `${newProject.fullName} submitted a request for ${newProject.businessName}`,
+      type: 'new_registration',
+      title: 'New Client Registration',
+      message: `${newProject.fullName} registered for ${newProject.businessName || 'project'} [${newProject.id}]`,
       clientName: newProject.fullName,
       services: newProject.services,
       projectId: newProject.id,
+      referenceToken: newProject.id,
       read: false,
       createdAt: now
     };
@@ -187,16 +237,17 @@ const db = {
   },
 
   updateProjectStatus(id, newStatus) {
-    const validStatuses = ['New', 'Contacted', 'In Progress', 'Completed'];
-    if (!validStatuses.includes(newStatus)) {
-      throw new Error(`Invalid status: ${newStatus}`);
+    const validStatuses = ['Pending', 'Approved', 'Rejected', 'In Progress', 'Completed', 'New', 'Contacted'];
+    const matchedStatus = validStatuses.find(s => s.toLowerCase() === (newStatus || '').toLowerCase());
+    if (!matchedStatus) {
+      throw new Error(`Invalid status: ${newStatus}. Valid statuses are: ${validStatuses.join(', ')}`);
     }
 
     const data = readDb();
-    const project = data.projects.find(p => p.id === id);
+    const project = data.projects.find(p => p.id === id || p.referenceToken === id);
     if (!project) return null;
 
-    project.status = newStatus;
+    project.status = matchedStatus;
     project.updatedAt = new Date().toISOString();
     writeDb(data);
     return project;
@@ -204,7 +255,7 @@ const db = {
 
   updateProjectNotes(id, notes) {
     const data = readDb();
-    const project = data.projects.find(p => p.id === id);
+    const project = data.projects.find(p => p.id === id || p.referenceToken === id);
     if (!project) return null;
 
     project.notes = notes || '';
@@ -216,8 +267,8 @@ const db = {
   deleteProject(id) {
     const data = readDb();
     const initialLen = data.projects.length;
-    data.projects = data.projects.filter(p => p.id !== id);
-    data.notifications = data.notifications.filter(n => n.projectId !== id);
+    data.projects = data.projects.filter(p => p.id !== id && p.referenceToken !== id);
+    data.notifications = data.notifications.filter(n => n.projectId !== id && n.referenceToken !== id);
     writeDb(data);
     return data.projects.length < initialLen;
   },
@@ -250,19 +301,32 @@ const db = {
   getStats() {
     const data = readDb();
     const total = data.projects.length;
-    const newCount = data.projects.filter(p => p.status === 'New').length;
+    const newCount = data.projects.filter(p => p.status === 'New' || p.status === 'Pending').length;
+    const pending = data.projects.filter(p => p.status === 'Pending').length;
+    const approved = data.projects.filter(p => p.status === 'Approved').length;
+    const rejected = data.projects.filter(p => p.status === 'Rejected').length;
     const inProgress = data.projects.filter(p => p.status === 'In Progress').length;
     const completed = data.projects.filter(p => p.status === 'Completed').length;
     const contacted = data.projects.filter(p => p.status === 'Contacted').length;
     const unreadNotifications = data.notifications.filter(n => !n.read).length;
 
+    const recentRegistrations = [...data.projects]
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+      .slice(0, 5);
+
     return {
-      newRequests: newCount,
       totalRequests: total,
+      totalRegistrations: total,
+      newRequests: newCount,
+      newRegistrations: newCount,
+      pending,
+      approved,
+      rejected,
       inProgress,
       completed,
       contacted,
-      unreadNotifications
+      unreadNotifications,
+      recentRegistrations
     };
   }
 };
