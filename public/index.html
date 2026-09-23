@@ -861,10 +861,6 @@
           <span class="step-num">2</span>
           <span>Project Details</span>
         </div>
-        <div class="builder-step-badge" data-step-badge="3">
-          <span class="step-num">3</span>
-          <span>Confirmation</span>
-        </div>
       </div>
 
       <!-- Scrollable Modal Content -->
@@ -902,52 +898,188 @@
 
           <form id="builder-project-form">
             <div class="form-grid">
+              <!-- Section 1: Client Details -->
+              <div class="form-section-header">
+                <span class="section-tag">Step 2.1</span>
+                <h4>Client & Contact Details</h4>
+              </div>
+
               <!-- Full Name -->
               <div class="form-group">
                 <label class="form-label" for="client-fullname">Full Name *</label>
-                <input type="text" id="client-fullname" class="form-input" placeholder="e.g. Sarah Jenkins" required>
+                <input type="text" id="client-fullname" name="Full Name" class="form-input" placeholder="e.g. Rahul Verma" required>
               </div>
 
-              <!-- Business Name -->
+              <!-- Business / Company Name -->
               <div class="form-group">
-                <label class="form-label" for="client-business">Business Name *</label>
-                <input type="text" id="client-business" class="form-input" placeholder="e.g. Horizon Coffee Co." required>
+                <label class="form-label" for="client-business">Company / Business Name *</label>
+                <input type="text" id="client-business" name="Company / Business Name" class="form-input" placeholder="e.g. Horizon Coffee Co." required>
               </div>
 
-              <!-- Phone / WhatsApp -->
+              <!-- Phone / WhatsApp Number -->
               <div class="form-group">
                 <label class="form-label" for="client-phone">Phone / WhatsApp Number *</label>
-                <input type="tel" id="client-phone" class="form-input" placeholder="+91 93457 68934" required>
+                <input type="tel" id="client-phone" name="Phone / WhatsApp Number" class="form-input" placeholder="+91 93457 68934" required>
               </div>
 
-              <!-- Email (Optional) -->
+              <!-- Email Address -->
               <div class="form-group">
                 <label class="form-label" for="client-email">Email Address <span class="optional">(optional)</span></label>
-                <input type="email" id="client-email" class="form-input" placeholder="contact@example.com">
+                <input type="email" id="client-email" name="Email Address" class="form-input" placeholder="contact@example.com">
               </div>
 
-              <!-- Address / Location -->
+              <!-- Location / Address -->
               <div class="form-group full-width">
-                <label class="form-label" for="client-address">Address / Location <span class="optional">(optional)</span></label>
-                <input type="text" id="client-address" class="form-input" placeholder="e.g. Richmond Town, Bengaluru, Karnataka">
+                <label class="form-label" for="client-address">City / Location <span class="optional">(optional)</span></label>
+                <input type="text" id="client-address" name="City / Location" class="form-input" placeholder="e.g. Bengaluru, Karnataka, India">
+              </div>
+
+              <!-- Section 2: Project Specifications & Scope -->
+              <div class="form-section-header">
+                <span class="section-tag">Step 2.2</span>
+                <h4>Project Scope & Deliverables</h4>
+              </div>
+
+              <!-- Project Type -->
+              <div class="form-group">
+                <label class="form-label" for="client-project-type">Project Type</label>
+                <select id="client-project-type" name="Project Type" class="form-select">
+                  <option value="New Brand Identity (From Scratch)">New Brand Identity (From Scratch)</option>
+                  <option value="Rebranding / Brand Redesign">Rebranding / Brand Redesign</option>
+                  <option value="Responsive Website / Web App">Responsive Website / Web App</option>
+                  <option value="Landing Page / High-Conversion Page">Landing Page / High-Conversion Page</option>
+                  <option value="QR Scanner Digital Web Page / Menu">QR Scanner Digital Web Page / Menu</option>
+                  <option value="Marketing Creatives & Social Media Kit">Marketing Creatives & Social Media Kit</option>
+                  <option value="Corporate Stationery & Visiting Cards">Corporate Stationery & Visiting Cards</option>
+                  <option value="Packaging & Custom Design">Packaging & Custom Design</option>
+                  <option value="Other / Custom Project">Other / Custom Project</option>
+                </select>
+              </div>
+
+              <!-- Pages / Deliverables Required -->
+              <div class="form-group">
+                <label class="form-label" for="client-pages">Pages / Deliverables Required <span class="optional">(optional)</span></label>
+                <input type="text" id="client-pages" name="Pages / Deliverables Required" class="form-input" placeholder="e.g. 5 Pages Multi-page / Logo Kit / 10 Social Posts">
+              </div>
+
+              <!-- Key Features Required (Checkboxes) -->
+              <div class="form-group full-width">
+                <label class="form-label">Key Features & Options Needed <span class="optional">(select all that apply)</span></label>
+                <div class="checkbox-pills-grid" id="builder-features-grid">
+                  <label class="checkbox-pill-label">
+                    <input type="checkbox" name="Features Required" value="Mobile-First Responsive UI">
+                    <span>Mobile-First Responsive UI</span>
+                  </label>
+                  <label class="checkbox-pill-label">
+                    <input type="checkbox" name="Features Required" value="Direct WhatsApp Chat Integration">
+                    <span>Direct WhatsApp Chat</span>
+                  </label>
+                  <label class="checkbox-pill-label">
+                    <input type="checkbox" name="Features Required" value="Custom Contact & Lead Forms">
+                    <span>Contact / Lead Forms</span>
+                  </label>
+                  <label class="checkbox-pill-label">
+                    <input type="checkbox" name="Features Required" value="SEO & Speed Optimization">
+                    <span>SEO & Speed Tuning</span>
+                  </label>
+                  <label class="checkbox-pill-label">
+                    <input type="checkbox" name="Features Required" value="Full Brand Identity Guidelines">
+                    <span>Brand Style Guidelines</span>
+                  </label>
+                  <label class="checkbox-pill-label">
+                    <input type="checkbox" name="Features Required" value="Vector Source Files (AI, SVG, PDF)">
+                    <span>Vector Source Files</span>
+                  </label>
+                  <label class="checkbox-pill-label">
+                    <input type="checkbox" name="Features Required" value="Social Media Template Kit">
+                    <span>Social Media Kit</span>
+                  </label>
+                  <label class="checkbox-pill-label">
+                    <input type="checkbox" name="Features Required" value="QR Code Generation & Print Standee">
+                    <span>QR Standee / Menu Setup</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Section 3: Design & Style Preferences -->
+              <div class="form-section-header">
+                <span class="section-tag">Step 2.3</span>
+                <h4>Design & Aesthetic Preferences</h4>
+              </div>
+
+              <!-- Style Preference -->
+              <div class="form-group">
+                <label class="form-label" for="client-style">Design & Style Preference <span class="optional">(optional)</span></label>
+                <select id="client-style" name="Style Preference" class="form-select">
+                  <option value="Minimalist, Clean & Modern">Minimalist, Clean & Modern</option>
+                  <option value="Luxury, Elegant & Premium">Luxury, Elegant & Premium</option>
+                  <option value="Bold, Vibrant & Creative">Bold, Vibrant & Creative</option>
+                  <option value="Corporate, Structured & Professional">Corporate, Structured & Professional</option>
+                  <option value="Dark Aesthetic & High-Tech">Dark Aesthetic & High-Tech</option>
+                  <option value="Earthy, Warm & Organic">Earthy, Warm & Organic</option>
+                  <option value="Open to Creative Recommendations">Open to Creative Recommendations</option>
+                </select>
+              </div>
+
+              <!-- Colour Preferences -->
+              <div class="form-group">
+                <label class="form-label" for="client-colors">Colour Preferences <span class="optional">(optional)</span></label>
+                <input type="text" id="client-colors" name="Colour Preferences" class="form-input" placeholder="e.g. Deep Forest Green, Champagne Gold, Off-White">
+              </div>
+
+              <!-- Reference Links / Inspirations -->
+              <div class="form-group full-width">
+                <label class="form-label" for="client-references">Design References / Competitor Links <span class="optional">(optional)</span></label>
+                <input type="text" id="client-references" name="Reference Details / Links" class="form-input" placeholder="e.g. Links to websites, Instagram pages, or Pinterest boards you like...">
+              </div>
+
+              <!-- Section 4: Budget & Timeline -->
+              <div class="form-section-header">
+                <span class="section-tag">Step 2.4</span>
+                <h4>Budget & Timeline</h4>
+              </div>
+
+              <!-- Estimated Budget -->
+              <div class="form-group">
+                <label class="form-label" for="client-budget">Estimated Budget <span class="optional">(optional)</span></label>
+                <select id="client-budget" name="Budget" class="form-select">
+                  <option value="Flexible / Open to Proposal">Flexible / Open to Proposal</option>
+                  <option value="Under ₹10,000">Under ₹10,000</option>
+                  <option value="₹10,000 – ₹25,000">₹10,000 – ₹25,000</option>
+                  <option value="₹25,000 – ₹50,000">₹25,000 – ₹50,000</option>
+                  <option value="₹50,000 – ₹1,00,000">₹50,000 – ₹1,00,000</option>
+                  <option value="₹1,00,000+">₹1,00,000+</option>
+                </select>
               </div>
 
               <!-- Preferred Timeline -->
-              <div class="form-group full-width">
-                <label class="form-label" for="client-timeline">Preferred Timeline <span class="optional">(optional)</span></label>
-                <select id="client-timeline" class="form-select">
-                  <option value="Flexible">Flexible / Open</option>
+              <div class="form-group">
+                <label class="form-label" for="client-timeline">Preferred Deadline / Timeline <span class="optional">(optional)</span></label>
+                <select id="client-timeline" name="Deadline / Timeline" class="form-select">
+                  <option value="Flexible / Open">Flexible / Open</option>
                   <option value="Urgent (< 1 week)">Urgent (&lt; 1 week)</option>
-                  <option value="2-3 weeks">2-3 weeks</option>
-                  <option value="1 month">1 month</option>
-                  <option value="More than 1 month">More than 1 month</option>
+                  <option value="1 – 2 weeks">1 – 2 weeks</option>
+                  <option value="2 – 4 weeks">2 – 4 weeks</option>
+                  <option value="1 month+">1 month+</option>
                 </select>
+              </div>
+
+              <!-- Section 5: Requirements & Additional Notes -->
+              <div class="form-section-header">
+                <span class="section-tag">Step 2.5</span>
+                <h4>Detailed Requirements & Notes</h4>
               </div>
 
               <!-- Project Requirements -->
               <div class="form-group full-width">
-                <label class="form-label" for="client-requirements">Project Requirements & Goals *</label>
-                <textarea id="client-requirements" class="form-textarea" placeholder="Describe your brand identity needs, website features, target audience, or specific vision..." required></textarea>
+                <label class="form-label" for="client-requirements">Complete Project Requirements & Goals *</label>
+                <textarea id="client-requirements" name="Complete Requirements" class="form-textarea" placeholder="Describe your brand identity needs, website features, target audience, brand message, or specific vision..." required></textarea>
+              </div>
+
+              <!-- Additional Requirements -->
+              <div class="form-group full-width">
+                <label class="form-label" for="client-additional">Additional Requirements / Special Notes <span class="optional">(optional)</span></label>
+                <textarea id="client-additional" name="Additional Requirements" class="form-textarea" style="min-height:80px;" placeholder="Any special requests, language preferences, file formats, or questions for our studio..."></textarea>
               </div>
             </div>
 
@@ -956,38 +1088,12 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="transform:rotate(180deg);"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 <span>Back to Services</span>
               </button>
-              <button type="submit" class="btn btn-gold" id="builder-submit-btn">
-                <span>Submit Project Request</span>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              <button type="submit" class="btn btn-emerald" id="builder-submit-btn" style="background:#25D366; color:#0A231B; font-weight:700; gap:0.6rem;">
+                <span>Send Full Brief to WhatsApp</span>
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.04 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19.01L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 14.99 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67Z"/></svg>
               </button>
             </div>
           </form>
-        </div>
-
-        <!-- STEP 3: SUBMISSION CONFIRMATION -->
-        <div class="builder-step-panel" id="builder-step-3">
-          <div class="builder-success-wrap">
-            <div class="success-celebration-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-            </div>
-            <h3>Project request received successfully!</h3>
-            <p>
-              Thank you for reaching out to <strong>ELYRA Visual Studio</strong>. Our creative team has received your project brief and will review your requirements promptly.
-            </p>
-
-            <div class="success-ref-card">
-              <span class="ref-label">Reference ID</span>
-              <span class="ref-val" id="builder-success-ref">ELY-1004</span>
-            </div>
-
-            <div class="success-action-buttons">
-              <a href="#" id="success-whatsapp-link" target="_blank" rel="noopener noreferrer" class="btn btn-emerald">
-                <span>Quick WhatsApp Follow-up</span>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-              </a>
-              <button class="btn btn-outline" data-action="close-modal">Close Window</button>
-            </div>
-          </div>
         </div>
       </div>
     </div>

@@ -369,9 +369,13 @@ function initContactQuickForm() {
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
-    const name = document.getElementById('quick-name').value.trim();
-    const phone = document.getElementById('quick-phone').value.trim();
-    const message = document.getElementById('quick-message').value.trim();
+    const nameEl = document.getElementById('quick-name');
+    const phoneEl = document.getElementById('quick-phone');
+    const msgEl = document.getElementById('quick-message');
+
+    const name = nameEl ? nameEl.value.trim() : '';
+    const phone = phoneEl ? phoneEl.value.trim() : '';
+    const message = msgEl ? msgEl.value.trim() : '';
 
     if (!name || !phone) {
       if (window.elyraBuilder) {
@@ -380,9 +384,39 @@ function initContactQuickForm() {
       return;
     }
 
-    // Direct WhatsApp Bridge
-    const text = encodeURIComponent(`Hello ELYRA Visual Studio! My name is ${name} (${phone}). ${message ? `I'm inquiring about: ${message}` : 'I would like to discuss a project with your studio.'}`);
-    window.open(`https://wa.me/919345768934?text=${text}`, '_blank');
+    const lines = [
+      '━━━━━━━━━━━━━━━━',
+      'ELYRA VISUAL STUDIO',
+      'QUICK STUDIO ENQUIRY',
+      '━━━━━━━━━━━━━━━━',
+      '',
+      'CLIENT DETAILS',
+      `Name: ${name}`,
+      `Phone: ${phone}`,
+      ''
+    ];
+
+    if (message) {
+      lines.push('ENQUIRY NOTE');
+      lines.push(message);
+      lines.push('');
+    }
+
+    lines.push('━━━━━━━━━━━━━━━━');
+    lines.push('END OF ENQUIRY');
+    lines.push('━━━━━━━━━━━━━━━━');
+
+    const text = encodeURIComponent(lines.join('\n'));
+    const waUrl = `https://wa.me/919345768934?text=${text}`;
+    
+    if (window.elyraBuilder) {
+      window.elyraBuilder.showToast('Connecting to studio WhatsApp (+91 93457 68934)...', 'success');
+    }
+
+    const waWindow = window.open(waUrl, '_blank');
+    if (!waWindow || waWindow.closed || typeof waWindow.closed === 'undefined') {
+      window.location.href = waUrl;
+    }
     form.reset();
   });
 }

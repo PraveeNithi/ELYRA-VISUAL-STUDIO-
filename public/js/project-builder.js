@@ -1,5 +1,5 @@
 // ELYRA Visual Studio — Interactive Project Builder Engine
-// Handles multi-service selection, live toast feedback, validation, and hybrid backend/local submission.
+// Handles multi-service selection, live toast feedback, dynamic 100% form harvesting, and direct WhatsApp routing (+91 9345768934)
 
 const AVAILABLE_SERVICES = [
   {
@@ -62,9 +62,11 @@ class ProjectBuilder {
   constructor() {
     this.selectedServices = new Set();
     this.currentStep = 1;
-    this.initElements();
-    this.bindEvents();
-    this.renderServiceCards();
+    if (typeof document !== 'undefined') {
+      this.initElements();
+      this.bindEvents();
+      this.renderServiceCards();
+    }
   }
 
   initElements() {
@@ -78,12 +80,10 @@ class ProjectBuilder {
     this.backBtn = document.getElementById('builder-back-btn');
     this.step1Container = document.getElementById('builder-step-1');
     this.step2Container = document.getElementById('builder-step-2');
-    this.step3Container = document.getElementById('builder-step-3');
     this.projectForm = document.getElementById('builder-project-form');
     this.formSelectedPills = document.getElementById('form-selected-services-pills');
     this.toastContainer = document.getElementById('toast-container');
     this.submitBtn = document.getElementById('builder-submit-btn');
-    this.successReference = document.getElementById('builder-success-ref');
     this.stepIndicators = document.querySelectorAll('.builder-step-badge');
   }
 
@@ -201,20 +201,20 @@ class ProjectBuilder {
         this.selectedServices.forEach(name => {
           const chip = document.createElement('span');
           chip.className = 'selected-chip';
-          chip.innerHTML = `
-            ${name}
-            <button type="button" aria-label="Remove ${name}" title="Remove">×</button>
-          `;
-          chip.querySelector('button').addEventListener('click', (e) => {
-            e.stopPropagation();
-            const card = Array.from(this.serviceGrid.children).find(c => c.getAttribute('data-service-name') === name);
-            if (card) {
-              this.toggleService(name, card);
-            } else {
-              this.selectedServices.delete(name);
-              this.updateSummaryUI();
-            }
-          });
+          chip.innerHTML = `${name} <button type="button" aria-label="Remove ${name}" title="Remove">×</button>`;
+          const btn = chip.querySelector('button');
+          if (btn) {
+            btn.addEventListener('click', (e) => {
+              e.stopPropagation();
+              const card = Array.from(this.serviceGrid.children).find(c => c.getAttribute('data-service-name') === name);
+              if (card) {
+                this.toggleService(name, card);
+              } else {
+                this.selectedServices.delete(name);
+                this.updateSummaryUI();
+              }
+            });
+          }
           this.selectedChips.appendChild(chip);
         });
       }
@@ -240,7 +240,6 @@ class ProjectBuilder {
 
     if (this.step1Container) this.step1Container.classList.toggle('active', step === 1);
     if (this.step2Container) this.step2Container.classList.toggle('active', step === 2);
-    if (this.step3Container) this.step3Container.classList.toggle('active', step === 3);
 
     this.stepIndicators.forEach((ind, idx) => {
       ind.classList.toggle('active', idx + 1 === step);
@@ -316,40 +315,331 @@ class ProjectBuilder {
     }, 3200);
   }
 
-  async handleSubmit(e) {
+  /**
+   * Helper: Determine clean human-readable label for any form element
+   */
+  getFieldLabel(el) {
+    if (el.type === 'checkbox' || el.type === 'radio') {
+      const nameAttr = el.getAttribute('name') || el.name;
+      if (nameAttr) {
+        return this.cleanLabelText(nameAttr);
+      }
+    }
+    if (el.id) {
+      const labelEl = document.querySelector(`label[for="${el.id}"]`);
+      if (labelEl) {
+        return this.cleanLabelText(labelEl.textContent);
+      }
+    }
+    const parentLabel = el.closest('label');
+    if (parentLabel) {
+      const clone = parentLabel.cloneNode(true);
+      clone.querySelectorAll('input, select, textarea').forEach(n => n.remove());
+      const txt = clone.textContent.trim();
+      if (txt) return this.cleanLabelText(txt);
+    }
+    if (el.getAttribute('name')) {
+      return this.cleanLabelText(el.getAttribute('name'));
+    }
+    if (el.getAttribute('aria-label')) {
+      return this.cleanLabelText(el.getAttribute('aria-label'));
+    }
+    if (el.getAttribute('placeholder')) {
+      return this.cleanLabelText(el.getAttribute('placeholder').replace(/^e\.g\.\s*/i, ''));
+    }
+    if (el.id) {
+      return this.cleanLabelText(
+        el.id
+          .replace(/^(client|builder)-/i, '')
+          .replace(/[-_]/g, ' ')
+          .replace(/\b\w/g, c => c.toUpperCase())
+      );
+    }
+    return 'Field';
+  }
+
+  cleanLabelText(str) {
+    if (!str) return '';
+    return str
+      .replace(/\s*\*\s*$/, '')
+      .replace(/\s*\(optional\)\s*$/i, '')
+      .replace(/\s*\(select all that apply\)\s*$/i, '')
+      .replace(/:\s*$/, '')
+      .trim();
+  }
+
+  /**
+   * Universal Dynamic Form Harvester:
+   * Captures 100% of all fields in the form dynamically.
+   */
+  collectAllFormData(formElement) {
+    const rawData = {};
+
+    // 1. Collect Step 1 Selected Services
+    if (this.selectedServices && this.selectedServices.size > 0) {
+      rawData['Selected Services'] = Array.from(this.selectedServices);
+    }
+
+    // 2. Collect all form controls
+    const elements = Array.from(formElement.elements || formElement.querySelectorAll('input, select, textarea'));
+    const groupedCheckboxes = {};
+    const groupedRadios = {};
+
+    elements.forEach(el => {
+      if (!el || !el.tagName) return;
+      const tag = el.tagName.toLowerCase();
+      const type = (el.type || '').toLowerCase();
+      if (type === 'submit' || type === 'button' || type === 'reset') return;
+
+      const label = this.getFieldLabel(el);
+      const nameKey = el.name || el.id || label;
+
+      if (type === 'checkbox') {
+        if (!groupedCheckboxes[nameKey]) {
+          groupedCheckboxes[nameKey] = { label, values: [] };
+        }
+        if (el.checked) {
+          const val = (el.value && el.value !== 'on')
+            ? el.value
+            : (el.nextElementSibling ? el.nextElementSibling.textContent.trim() : 'Selected');
+          groupedCheckboxes[nameKey].values.push(val);
+        }
+        return;
+      }
+
+      if (type === 'radio') {
+        if (!groupedRadios[nameKey]) {
+          groupedRadios[nameKey] = { label, value: '' };
+        }
+        if (el.checked) {
+          const val = el.value || (el.nextElementSibling ? el.nextElementSibling.textContent.trim() : '');
+          groupedRadios[nameKey].value = val;
+        }
+        return;
+      }
+
+      if (tag === 'select') {
+        if (el.selectedIndex >= 0) {
+          const opt = el.options[el.selectedIndex];
+          const val = opt ? (opt.textContent.trim() || opt.value.trim()) : '';
+          if (val) {
+            rawData[label] = val;
+          }
+        }
+        return;
+      }
+
+      if (tag === 'input' || tag === 'textarea') {
+        const val = el.value ? el.value.trim() : '';
+        if (val) {
+          rawData[label] = val;
+        }
+      }
+    });
+
+    // Merge multi-checkbox values
+    Object.values(groupedCheckboxes).forEach(group => {
+      if (group.values.length > 0) {
+        rawData[group.label] = group.values;
+      }
+    });
+
+    // Merge radio values
+    Object.values(groupedRadios).forEach(group => {
+      if (group.value) {
+        rawData[group.label] = group.value;
+      }
+    });
+
+    return rawData;
+  }
+
+  /**
+   * Builds the formatted executive WhatsApp message containing 100% of data.
+   */
+  buildWhatsAppMessage(data) {
+    const usedKeys = new Set();
+
+    const consume = (pattern) => {
+      for (const k of Object.keys(data)) {
+        if (usedKeys.has(k)) continue;
+        if (pattern.test(k)) {
+          usedKeys.add(k);
+          return { key: k, val: data[k] };
+        }
+      }
+      return null;
+    };
+
+    const lines = [];
+
+    // Header Box
+    lines.push('━━━━━━━━━━━━━━━━');
+    lines.push('ELYRA VISUAL STUDIO');
+    lines.push('NEW PROJECT REQUEST');
+    lines.push('━━━━━━━━━━━━━━━━');
+    lines.push('');
+
+    // --- CLIENT DETAILS ---
+    const clientLines = [];
+    const nameItem = consume(/^(full\s*)?name$/i);
+    const phoneItem = consume(/phone|whatsapp|contact/i);
+    const emailItem = consume(/email/i);
+    const companyItem = consume(/company|business|brand/i);
+    const locationItem = consume(/location|city|address/i);
+
+    if (nameItem && nameItem.val) clientLines.push(`Name: ${nameItem.val}`);
+    if (phoneItem && phoneItem.val) clientLines.push(`Phone: ${phoneItem.val}`);
+    if (emailItem && emailItem.val) clientLines.push(`Email: ${emailItem.val}`);
+    if (companyItem && companyItem.val) clientLines.push(`Company: ${companyItem.val}`);
+    if (locationItem && locationItem.val) clientLines.push(`Location: ${locationItem.val}`);
+
+    if (clientLines.length > 0) {
+      lines.push('CLIENT DETAILS');
+      clientLines.forEach(l => lines.push(l));
+      lines.push('');
+    }
+
+    // --- PROJECT DETAILS ---
+    const projectLines = [];
+    const typeItem = consume(/project\s*type|category/i);
+    const serviceItem = consume(/service/i);
+    const pagesItem = consume(/page|deliverable/i);
+    const featuresItem = consume(/feature|option/i);
+
+    if (typeItem && typeItem.val) projectLines.push(`Project Type: ${typeItem.val}`);
+    if (serviceItem && serviceItem.val) {
+      if (Array.isArray(serviceItem.val)) {
+        projectLines.push(`Service:\n${serviceItem.val.map(s => `• ${s}`).join('\n')}`);
+      } else {
+        projectLines.push(`Service: ${serviceItem.val}`);
+      }
+    }
+    if (pagesItem && pagesItem.val) projectLines.push(`Pages: ${pagesItem.val}`);
+    if (featuresItem && featuresItem.val) {
+      if (Array.isArray(featuresItem.val)) {
+        projectLines.push(`Features:\n${featuresItem.val.map(f => `• ${f}`).join('\n')}`);
+      } else {
+        projectLines.push(`Features: ${featuresItem.val}`);
+      }
+    }
+
+    if (projectLines.length > 0) {
+      lines.push('PROJECT DETAILS');
+      projectLines.forEach(l => lines.push(l));
+      lines.push('');
+    }
+
+    // --- DESIGN DETAILS ---
+    const designLines = [];
+    const styleItem = consume(/style|aesthetic/i);
+    const colorsItem = consume(/colou?r/i);
+    const refItem = consume(/reference|link|inspiration/i);
+
+    if (styleItem && styleItem.val) designLines.push(`Style: ${styleItem.val}`);
+    if (colorsItem && colorsItem.val) designLines.push(`Colours: ${colorsItem.val}`);
+    if (refItem && refItem.val) designLines.push(`References: ${refItem.val}`);
+
+    if (designLines.length > 0) {
+      lines.push('DESIGN DETAILS');
+      designLines.forEach(l => lines.push(l));
+      lines.push('');
+    }
+
+    // --- BUDGET & TIMELINE ---
+    const budgetLines = [];
+    const budgetItem = consume(/budget|cost|pricing/i);
+    const timelineItem = consume(/timeline|deadline|schedule/i);
+
+    if (budgetItem && budgetItem.val) budgetLines.push(`Budget: ${budgetItem.val}`);
+    if (timelineItem && timelineItem.val) budgetLines.push(`Deadline: ${timelineItem.val}`);
+
+    if (budgetLines.length > 0) {
+      lines.push('PROJECT DETAILS');
+      budgetLines.forEach(l => lines.push(l));
+      lines.push('');
+    }
+
+    // --- PROJECT REQUIREMENTS ---
+    const reqItem = consume(/requirement|scope|goal|brief|vision|description/i);
+    if (reqItem && reqItem.val) {
+      lines.push('PROJECT REQUIREMENTS');
+      lines.push(`${reqItem.val}`);
+      lines.push('');
+    }
+
+    // --- ADDITIONAL REQUIREMENTS ---
+    const addItem = consume(/additional|note|comment|remark|special/i);
+    if (addItem && addItem.val) {
+      lines.push('ADDITIONAL REQUIREMENTS');
+      lines.push(`${addItem.val}`);
+      lines.push('');
+    }
+
+    // --- 100% DATA PRESERVATION FOR ANY EXTRA/CUSTOM FIELDS ---
+    const remainingKeys = Object.keys(data).filter(k => !usedKeys.has(k));
+    if (remainingKeys.length > 0) {
+      lines.push('ADDITIONAL DETAILS');
+      remainingKeys.forEach(k => {
+        const v = data[k];
+        if (Array.isArray(v)) {
+          lines.push(`${k}:`);
+          v.forEach(item => lines.push(`• ${item}`));
+        } else {
+          lines.push(`${k}: ${v}`);
+        }
+      });
+      lines.push('');
+    }
+
+    // Footer
+    lines.push('━━━━━━━━━━━━━━━━');
+    lines.push('END OF REQUIREMENTS');
+    lines.push('━━━━━━━━━━━━━━━━');
+
+    return lines.join('\n');
+  }
+
+  /**
+   * Direct Form Submission Handler
+   * Validates required inputs, extracts 100% form data, and immediately opens WhatsApp chat (+91 9345768934)
+   */
+  handleSubmit(e) {
     e.preventDefault();
 
-    const fullName = document.getElementById('client-fullname').value.trim();
-    const businessName = document.getElementById('client-business').value.trim();
-    const phone = document.getElementById('client-phone').value.trim();
-    const email = document.getElementById('client-email') ? document.getElementById('client-email').value.trim() : '';
-    const address = document.getElementById('client-address') ? document.getElementById('client-address').value.trim() : '';
-    const requirements = document.getElementById('client-requirements').value.trim();
-    const timeline = document.getElementById('client-timeline').value;
+    const fullNameEl = document.getElementById('client-fullname');
+    const businessEl = document.getElementById('client-business');
+    const phoneEl = document.getElementById('client-phone');
+    const reqEl = document.getElementById('client-requirements');
 
-    if (!fullName || fullName.length < 2) {
-      this.showToast('Please enter your full name.', 'warning');
-      document.getElementById('client-fullname').focus();
-      return;
-    }
-    if (!businessName) {
-      this.showToast('Please enter your business or project name.', 'warning');
-      document.getElementById('client-business').focus();
-      return;
-    }
-    if (!phone || phone.length < 6) {
-      this.showToast('Please enter a valid WhatsApp / Phone number.', 'warning');
-      document.getElementById('client-phone').focus();
-      return;
-    }
+    const fullName = fullNameEl ? fullNameEl.value.trim() : '';
+    const businessName = businessEl ? businessEl.value.trim() : '';
+    const phone = phoneEl ? phoneEl.value.trim() : '';
+    const requirements = reqEl ? reqEl.value.trim() : '';
+
     if (this.selectedServices.size === 0) {
       this.showToast('Please select at least one service.', 'warning');
       this.goToStep(1);
       return;
     }
+    if (!fullName || fullName.length < 2) {
+      this.showToast('Please enter your full name.', 'warning');
+      if (fullNameEl) fullNameEl.focus();
+      return;
+    }
+    if (!businessName) {
+      this.showToast('Please enter your company / business name.', 'warning');
+      if (businessEl) businessEl.focus();
+      return;
+    }
+    if (!phone || phone.length < 6) {
+      this.showToast('Please enter a valid WhatsApp / Phone number.', 'warning');
+      if (phoneEl) phoneEl.focus();
+      return;
+    }
     if (!requirements || requirements.length < 5) {
-      this.showToast('Please tell us a little about your project requirements.', 'warning');
-      document.getElementById('client-requirements').focus();
+      this.showToast('Please describe your project requirements & goals.', 'warning');
+      if (reqEl) reqEl.focus();
       return;
     }
 
@@ -357,103 +647,32 @@ class ProjectBuilder {
       this.submitBtn.disabled = true;
       this.submitBtn.innerHTML = `
         <span class="btn-spinner"></span>
-        Submitting Registration...
+        <span>Connecting to WhatsApp...</span>
       `;
     }
 
     try {
-      const payload = {
-        fullName,
-        businessName,
-        phone,
-        email,
-        address,
-        services: Array.from(this.selectedServices),
-        selectedWork: Array.from(this.selectedServices),
-        requirements,
-        timeline,
-        status: 'Pending'
-      };
+      // 1. Extract 100% of all fields dynamically
+      const formData = this.collectAllFormData(this.projectForm);
 
-      const currentYear = new Date().getFullYear();
-      let assignedId = `ELYRA-${currentYear}-${Math.floor(1004 + Math.random() * 8000)}`;
-      let isSuccess = false;
+      // 2. Build full executive message
+      const message = this.buildWhatsAppMessage(formData);
 
-      // Try Node.js Backend API
-      try {
-        const response = await fetch('/api/projects', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-        if (response.ok) {
-          const data = await response.json();
-          if (data.success) {
-            assignedId = data.referenceToken || data.registrationNumber || data.projectId || assignedId;
-            isSuccess = true;
-          }
-        }
-      } catch (apiErr) {
-        // Fallback for static GitHub Pages hosting
+      // 3. Target WhatsApp Number
+      const targetPhone = '919345768934';
+      const encodedMsg = encodeURIComponent(message);
+      const waUrl = `https://wa.me/${targetPhone}?text=${encodedMsg}`;
+
+      this.showToast('Opening WhatsApp with your project brief...', 'success');
+
+      // 4. Direct WhatsApp Launch
+      const waWindow = window.open(waUrl, '_blank');
+      if (!waWindow || waWindow.closed || typeof waWindow.closed === 'undefined') {
+        window.location.href = waUrl;
       }
 
-      // Hybrid fallback for GitHub Pages (local browser persistence)
-      if (!isSuccess) {
-        try {
-          const localProjects = JSON.parse(localStorage.getItem('elyra_projects_db') || '[]');
-          const newEntry = {
-            id: assignedId,
-            referenceToken: assignedId,
-            registrationNumber: assignedId,
-            fullName,
-            businessName,
-            phone,
-            email,
-            address,
-            services: Array.from(this.selectedServices),
-            selectedWork: Array.from(this.selectedServices),
-            requirements,
-            timeline: timeline || 'Flexible',
-            status: 'Pending',
-            notes: '',
-            createdAt: new Date().toISOString()
-          };
-          localProjects.unshift(newEntry);
-          localStorage.setItem('elyra_projects_db', JSON.stringify(localProjects));
-
-          const localNotifs = JSON.parse(localStorage.getItem('elyra_notifs_db') || '[]');
-          localNotifs.unshift({
-            id: `NOTIF-${Date.now()}`,
-            title: 'New Client Registration',
-            message: `${fullName} registered for ${businessName} [${assignedId}]`,
-            clientName: fullName,
-            services: Array.from(this.selectedServices),
-            projectId: assignedId,
-            referenceToken: assignedId,
-            read: false,
-            createdAt: new Date().toISOString()
-          });
-          localStorage.setItem('elyra_notifs_db', JSON.stringify(localNotifs));
-          isSuccess = true;
-        } catch (e) {
-          isSuccess = true;
-        }
-      }
-
-      if (isSuccess) {
-        if (this.successReference) {
-          this.successReference.textContent = assignedId;
-        }
-
-        const whatsappBtn = document.getElementById('success-whatsapp-link');
-        if (whatsappBtn) {
-          const waMsg = encodeURIComponent(`Hi ELYRA Visual Studio! I just registered for a project (Reference No: ${assignedId}) for ${businessName}. Looking forward to connecting!`);
-          whatsappBtn.href = `https://wa.me/919345768934?text=${waMsg}`;
-        }
-
-        this.goToStep(3);
-        this.showToast('Registration submitted successfully!', 'success');
-
+      // 5. Reset modal and selections
+      setTimeout(() => {
         this.projectForm.reset();
         this.selectedServices.clear();
         Array.from(this.serviceGrid.children).forEach(c => {
@@ -461,22 +680,30 @@ class ProjectBuilder {
           c.setAttribute('aria-checked', 'false');
         });
         this.updateSummaryUI();
-      }
+        this.close();
+      }, 800);
+
     } catch (err) {
-      console.error('Submission error:', err);
-      this.showToast('Submission error. Please try again or reach out on WhatsApp.', 'warning');
+      console.error('WhatsApp dispatch error:', err);
+      this.showToast('Error formatting message. Please message +91 9345768934 directly.', 'warning');
     } finally {
       if (this.submitBtn) {
         this.submitBtn.disabled = false;
         this.submitBtn.innerHTML = `
-          <span>Submit Project Request</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          <span>Send Full Brief to WhatsApp</span>
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.04 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19.01L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 14.99 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67Z"/></svg>
         `;
       }
     }
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  window.elyraBuilder = new ProjectBuilder();
-});
+if (typeof document !== 'undefined') {
+  document.addEventListener('DOMContentLoaded', () => {
+    window.elyraBuilder = new ProjectBuilder();
+  });
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { ProjectBuilder, AVAILABLE_SERVICES };
+}
